@@ -100,7 +100,7 @@ select:focus{outline:none;border-color:var(--grn)}
 .bench-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .bench-label{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted)}
 .bench-count{font-size:11px;font-weight:400;color:var(--dim)}
-.bench-row{display:flex;gap:8px;min-height:110px;padding:4px 2px;overflow-x:auto;align-items:flex-start;-webkit-overflow-scrolling:touch}
+.bench-row{display:flex;gap:8px;min-height:110px;padding:4px 2px;overflow-x:scroll;overflow-y:visible;align-items:flex-start;-webkit-overflow-scrolling:touch;touch-action:pan-x;flex-wrap:nowrap}
 .bench-row::-webkit-scrollbar{display:none}
 .bench-row.over{background:var(--grn-d);border-radius:12px}
 
