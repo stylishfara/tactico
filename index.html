@@ -56,7 +56,7 @@ select:focus{outline:none;border-color:var(--grn)}
 .col-formation,.col-squad{
   display:none;position:absolute;inset:0;width:100%;z-index:20;
   flex-direction:column;background:var(--s1);overflow:hidden;
-  padding:16px 16px 12px;gap:12px
+  padding:16px 16px 12px;gap:12px;touch-action:pan-y
 }
 .col-formation.mob-active,.col-squad.mob-active{display:flex}
 .col-squad{padding:0;gap:0}
@@ -67,7 +67,7 @@ select:focus{outline:none;border-color:var(--grn)}
 .mini-pitch-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--b2);flex-shrink:0;max-height:38vh}
 
 /* Formation buttons */
-.f-grid{display:grid;grid-template-columns:1fr;gap:6px}
+.f-grid{display:grid;grid-template-columns:1fr;gap:6px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0}
 .f-btn{
   background:var(--s2);color:var(--txt);
   border:1px solid var(--b1);border-radius:8px;
@@ -118,7 +118,7 @@ select:focus{outline:none;border-color:var(--grn)}
 /* ── BENCH CARDS — FPL style ── */
 .b-card{
   display:flex;flex-direction:column;align-items:center;gap:3px;
-  cursor:grab;flex-shrink:0;touch-action:none;
+  cursor:grab;flex-shrink:0;touch-action:pan-x;
   background:var(--s2);border:1px solid var(--b1);
   border-radius:12px;padding:6px 8px 8px;
   min-width:72px;max-width:72px;
