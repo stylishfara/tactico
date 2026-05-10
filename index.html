@@ -16,7 +16,7 @@
   --font:'Inter',system-ui,sans-serif;
   --tab-h:60px;--hdr-h:50px;
 }
-html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--bg);color:var(--txt);touch-action:manipulation}
+html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);background:var(--bg);color:var(--txt);touch-action:manipulation}
 
 /* ── HEADER ── */
 header{display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:var(--hdr-h);background:var(--s1);border-bottom:1px solid var(--b1);flex-shrink:0;z-index:30;position:relative}
@@ -30,7 +30,7 @@ select:focus{outline:none;border-color:var(--pur-l)}
 .btn-icon{padding:6px 8px}
 
 /* ── APP SHELL ── */
-.shell{display:flex;flex-direction:column;height:calc(100vh - var(--hdr-h))}
+.shell{display:flex;flex-direction:column;height:calc(100vh - var(--hdr-h));height:calc(100dvh - var(--hdr-h))}
 
 /* ── DESKTOP LAYOUT ── */
 .app{display:flex;flex:1;overflow:hidden;min-height:0}
@@ -120,7 +120,7 @@ select:focus{outline:none;border-color:var(--pur-l)}
   select{min-width:0;flex:1;font-size:11px}
 
   /* Shell */
-  .shell{height:calc(100vh - var(--hdr-h));position:relative}
+  .shell{height:calc(100vh - var(--hdr-h));height:calc(100dvh - var(--hdr-h));position:relative}
 
   /* App area fills above tab bar */
   .app{flex:1;position:relative;overflow:hidden}
@@ -147,7 +147,7 @@ select:focus{outline:none;border-color:var(--pur-l)}
 
   /* Pitch sizing on mobile */
   .pitch-wrap{padding:8px}
-  .pitch-outer{max-height:calc(100vh - var(--hdr-h) - 130px - var(--tab-h))}
+  .pitch-outer{max-height:calc(100vh - var(--hdr-h) - 130px - var(--tab-h));max-height:calc(100dvh - var(--hdr-h) - 130px - var(--tab-h))}
 
   /* Bench on mobile */
   .bench-bar{padding:6px 10px}
