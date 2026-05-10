@@ -664,8 +664,13 @@ function _endDrag(cx, cy) {
       document.querySelector(`[data-pid="${drag.posId}"]`)?.classList.remove('dragging');
     }
     setTimeout(()=>{_dragging=false;},60);
+    drag={on:false};
+  } else {
+    // Tap (no drag movement) — open substitute popup
+    const posId=drag.posId;
+    drag={on:false};
+    openPopup(null,posId);
   }
-  drag={on:false};
 }
 
 // Mouse
@@ -720,7 +725,7 @@ let popupPosId=null;
 
 function openPopup(e,posId){
   if(_dragging)return;
-  e.stopPropagation();
+  if(e&&e.stopPropagation)e.stopPropagation();
   popupPosId=posId;
   const squad=TEAMS[S.team].players;
   const li=S.lineup.find(l=>l.posId===posId);
