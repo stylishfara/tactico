@@ -24,7 +24,7 @@
   --grn-l:#34d399;
   --grn-d:rgba(16,185,129,.12);
   --font:'Inter',system-ui,sans-serif;
-  --hdr-h:48px;--tab-h:60px;
+  --hdr-h:48px;--tab-h:68px;
 }
 html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);background:var(--bg);color:var(--txt);touch-action:manipulation}
 
@@ -152,19 +152,27 @@ select:focus{outline:none;border-color:var(--grn)}
 
 /* ── TAB BAR ── */
 .tab-bar{
-  display:flex;align-items:stretch;height:var(--tab-h);
-  background:var(--s1);border-top:1px solid var(--b1);
-  position:relative;z-index:30;flex-shrink:0
+  display:flex;align-items:center;justify-content:center;
+  height:var(--tab-h);background:transparent;
+  position:relative;z-index:30;flex-shrink:0;
+  padding:0 0 8px;
+}
+.tab-bar-inner{
+  display:flex;align-items:center;gap:4px;
+  background:var(--s1);border:1px solid var(--b2);
+  border-radius:9999px;padding:5px;
+  box-shadow:0 4px 24px rgba(0,0,0,.4)
 }
 .tab-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;border:none;background:none;color:var(--dim);font-family:var(--font);
-  font-size:10px;font-weight:500;cursor:pointer;transition:color .15s;padding:0
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  border:none;background:none;color:var(--dim);
+  cursor:pointer;transition:color .15s,background .15s;
+  border-radius:9999px;flex-shrink:0;padding:0
 }
-.tab-btn svg{transition:opacity .15s}
-.tab-btn.active{color:var(--grn)}
-.tab-btn.active svg{opacity:1}
-.tab-btn:not(.active) svg{opacity:.45}
+.tab-btn:hover{background:var(--s2);color:var(--txt)}
+.tab-btn.active{background:var(--grn);color:#fff}
+.tab-btn svg{display:block;transition:opacity .15s}
+.tab-btn:not(.active) svg{opacity:.7}
 </style>
 </head>
 <body>
@@ -255,22 +263,21 @@ select:focus{outline:none;border-color:var(--grn)}
 
   <!-- Mobile tab bar -->
   <nav class="tab-bar" id="tabBar">
-    <button class="tab-btn" id="tab-formation" onclick="setTab('formation')">
+   <div class="tab-bar-inner">
+    <button class="tab-btn" id="tab-formation" onclick="setTab('formation')" title="Formation">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
         <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
       </svg>
-      Formation
     </button>
-    <button class="tab-btn active" id="tab-pitch" onclick="setTab('pitch')">
+    <button class="tab-btn active" id="tab-pitch" onclick="setTab('pitch')" title="Pitch">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10"/>
         <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
         <line x1="2" y1="12" x2="22" y2="12"/>
       </svg>
-      Pitch
     </button>
-    <button class="tab-btn" id="tab-squad" onclick="setTab('squad')">
+    <button class="tab-btn" id="tab-squad" onclick="setTab('squad')" title="Squad">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
         <line x1="8" y1="18" x2="21" y2="18"/>
@@ -278,8 +285,8 @@ select:focus{outline:none;border-color:var(--grn)}
         <circle cx="3" cy="12" r="1.5" fill="currentColor" stroke="none"/>
         <circle cx="3" cy="18" r="1.5" fill="currentColor" stroke="none"/>
       </svg>
-      Squad
     </button>
+   </div>
   </nav>
 </div>
 
