@@ -141,7 +141,7 @@ select:focus{outline:none;border-color:var(--grn)}
 .popup{
   position:fixed;left:0!important;right:0!important;
   bottom:var(--tab-h)!important;top:auto!important;
-  width:100%!important;min-width:unset;max-height:55vh;
+  width:100%!important;min-width:unset;max-height:74vh;
   background:var(--s1);border:1px solid var(--b2);
   border-radius:16px 16px 0 0;
   z-index:60;box-shadow:0 -4px 32px rgba(0,0,0,.6);
@@ -155,7 +155,7 @@ select:focus{outline:none;border-color:var(--grn)}
 .popup-player-name{font-size:16px;font-weight:600;color:var(--txt)}
 .popup-pos-badge{font-size:12px;font-weight:500;color:var(--grn);background:var(--grn-d);padding:3px 8px;border-radius:32px}
 .popup-sub-label{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted);padding:10px 16px 4px;flex-shrink:0}
-.popup-list{overflow-y:auto;flex:1;padding:6px 8px;-webkit-overflow-scrolling:touch}
+.popup-list{padding:2px 8px 8px}
 .popup-list::-webkit-scrollbar{width:3px}.popup-list::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
 .popup-row{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;transition:background .1s}
 .popup-row:hover,.popup-row:active{background:var(--s2)}
@@ -163,6 +163,11 @@ select:focus{outline:none;border-color:var(--grn)}
 .popup-row-name{font-size:14px;font-weight:400;flex:1;color:var(--txt)}
 .popup-row-pos{font-size:12px;font-weight:500;color:var(--muted)}
 .popup-empty{padding:24px 16px;font-size:14px;color:var(--dim);text-align:center}
+.popup-body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.popup-body::-webkit-scrollbar{width:3px}.popup-body::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
+.role-select-wrap{padding:2px 16px 12px}
+.role-select{width:100%;flex:none;height:40px;font-size:13px;font-weight:500;background-color:var(--s1)}
+.popup-divider{height:1px;background:var(--b1);margin:2px 16px 0}
 .overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}
 
 /* ── TAB BAR ── */
@@ -436,166 +441,220 @@ function miniPitchSVG(f) {
 const TEAMS = {
   'Arsenal':{kit:{body:'#EF0107',sleeve:'#EF0107',collar:'round'},players:[
     {n:1,name:'Raya',pos:'GK'},{n:13,name:'Kepa',pos:'GK'},{n:2,name:'Saliba',pos:'CB'},
-    {n:3,name:'Mosquera',pos:'CB'},{n:4,name:'White',pos:'RB'},{n:6,name:'Gabriel',pos:'CB'},
-    {n:7,name:'Saka',pos:'RW'},{n:8,name:'Ødegaard',pos:'AM'},{n:9,name:'Jesus',pos:'ST'},
-    {n:11,name:'Martinelli',pos:'LW'},{n:12,name:'Timber',pos:'RB'},{n:14,name:'Gyökeres',pos:'ST'},
-    {n:16,name:'Nørgaard',pos:'CM'},{n:17,name:'Zinchenko',pos:'LB'},{n:19,name:'Trossard',pos:'LW'},
-    {n:20,name:'Madueke',pos:'RW'},{n:29,name:'Havertz',pos:'CM'},{n:36,name:'Zubimendi',pos:'DM'},
-    {n:41,name:'Rice',pos:'DM'},{n:46,name:'Lewis-Skelly',pos:'LB'}]},
+    {n:5,name:'Hincapié',pos:'CB'},{n:6,name:'Gabriel',pos:'CB'},{n:4,name:'White',pos:'RB'},
+    {n:12,name:'Timber',pos:'RB'},{n:33,name:'Calafiori',pos:'LB'},{n:49,name:'Lewis-Skelly',pos:'LB'},
+    {n:41,name:'Rice',pos:'DM'},{n:36,name:'Zubimendi',pos:'DM'},{n:39,name:'Guimarães',pos:'CM'},
+    {n:23,name:'Merino',pos:'CM'},{n:8,name:'Ødegaard',pos:'AM'},{n:10,name:'Eze',pos:'AM'},
+    {n:7,name:'Saka',pos:'RW'},{n:20,name:'Madueke',pos:'RW'},{n:11,name:'Martinelli',pos:'LW'},
+    {n:14,name:'Gyökeres',pos:'ST'},{n:29,name:'Havertz',pos:'ST'},{n:3,name:'Mosquera',pos:'CB'},
+    {n:9,name:'Jesus',pos:'ST'},{n:17,name:'Tzolis',pos:'LW'},{n:21,name:'Vieira',pos:'AM'},
+    {n:22,name:'Nwaneri',pos:'AM'},{n:24,name:'Nelson',pos:'RW'},{n:30,name:'Meslier',pos:'GK'},
+    {n:35,name:'Setford',pos:'GK'},{n:56,name:'Dowman',pos:'AM'}]},
   'Aston Villa':{kit:{body:'#670E36',sleeve:'#95BFE5',collar:'v'},players:[
-    {n:23,name:'Martínez',pos:'GK'},{n:40,name:'Bizot',pos:'GK'},{n:2,name:'Cash',pos:'RB'},
-    {n:3,name:'Lindelöf',pos:'CB'},{n:4,name:'Konsa',pos:'CB'},{n:5,name:'Mings',pos:'CB'},
-    {n:6,name:'Barkley',pos:'CM'},{n:7,name:'McGinn',pos:'CM'},{n:8,name:'Tielemans',pos:'CM'},
-    {n:9,name:'Elliott',pos:'AM'},{n:10,name:'Buendía',pos:'AM'},{n:11,name:'Watkins',pos:'ST'},
-    {n:12,name:'Digne',pos:'LB'},{n:14,name:'Torres',pos:'CB'},{n:18,name:'Abraham',pos:'ST'},
-    {n:19,name:'Sancho',pos:'LW'},{n:22,name:'Maatsen',pos:'LB'},{n:24,name:'Onana',pos:'DM'},
-    {n:27,name:'Rogers',pos:'LW'},{n:31,name:'Bailey',pos:'RW'}]},
-  'Brentford':{kit:{body:'#e30613',sleeve:'#e30613',stripeColor:'#ffffff',stripeType:'vertical',collar:'round'},players:[
-    {n:1,name:'Kelleher',pos:'GK'},{n:12,name:'Valdimarsson',pos:'GK'},{n:2,name:'Hickey',pos:'RB'},
-    {n:3,name:'Henry',pos:'LB'},{n:4,name:'van den Berg',pos:'CB'},{n:5,name:'Pinnock',pos:'CB'},
-    {n:6,name:'Henderson',pos:'CM'},{n:7,name:'Schade',pos:'RW'},{n:8,name:'Jensen',pos:'CM'},
-    {n:9,name:'Thiago',pos:'ST'},{n:10,name:'Dasilva',pos:'CM'},{n:11,name:'Nelson',pos:'LW'},
-    {n:14,name:'Carvalho',pos:'AM'},{n:17,name:'Milambo',pos:'CM'},{n:19,name:'Ouattara',pos:'RW'},
-    {n:22,name:'Collins',pos:'CB'},{n:23,name:'Lewis-Potter',pos:'LW'},{n:24,name:'Damsgaard',pos:'CM'},
-    {n:27,name:'Janelt',pos:'CM'},{n:33,name:'Kayode',pos:'RB'}]},
-  'Brighton':{kit:{body:'#0057B8',sleeve:'#ffffff',stripeColor:'#ffffff',stripeType:'vertical',collar:'v'},players:[
-    {n:1,name:'Verbruggen',pos:'GK'},{n:13,name:'Steele',pos:'GK'},{n:2,name:'Lamptey',pos:'RB'},
-    {n:3,name:'Kadioglu',pos:'LB'},{n:5,name:'Dunk',pos:'CB'},{n:6,name:'Igor',pos:'CB'},
-    {n:7,name:'March',pos:'RW'},{n:8,name:'Gross',pos:'CM'},{n:9,name:'Tzimas',pos:'ST'},
-    {n:10,name:'Rutter',pos:'AM'},{n:11,name:'Mitoma',pos:'LW'},{n:14,name:'Baleba',pos:'DM'},
-    {n:20,name:'Milner',pos:'CM'},{n:22,name:'Welbeck',pos:'ST'},{n:24,name:'Gomez',pos:'DM'},
-    {n:25,name:'Ayari',pos:'CM'},{n:26,name:'van Hecke',pos:'CB'},{n:27,name:'Wieffer',pos:'DM'},
-    {n:28,name:'Estupinan',pos:'LB'},{n:40,name:'Pedro',pos:'ST'}]},
-  'Chelsea':{kit:{body:'#034694',sleeve:'#034694',collar:'round'},players:[
-    {n:1,name:'Sánchez',pos:'GK'},{n:12,name:'Jörgensen',pos:'GK'},{n:3,name:'Cucurella',pos:'LB'},
-    {n:4,name:'Tosin',pos:'CB'},{n:5,name:'Badiashile',pos:'CB'},{n:6,name:'Colwill',pos:'CB'},
-    {n:7,name:'Pedro Neto',pos:'RW'},{n:8,name:'Fernández',pos:'DM'},{n:9,name:'Delap',pos:'ST'},
-    {n:10,name:'Palmer',pos:'AM'},{n:11,name:'Gittens',pos:'LW'},{n:20,name:'João Pedro',pos:'ST'},
-    {n:21,name:'Hato',pos:'LB'},{n:23,name:'Chalobah',pos:'CB'},{n:24,name:'James',pos:'RB'},
-    {n:25,name:'Caicedo',pos:'DM'},{n:27,name:'Gusto',pos:'RB'},{n:29,name:'Fofana',pos:'CB'},
-    {n:41,name:'Estêvão',pos:'RW'},{n:45,name:'Lavia',pos:'DM'}]},
-  'Crystal Palace':{kit:{body:'#1B458F',sleeve:'#C4122E',stripeColor:'#C4122E',stripeType:'vertical',collar:'round'},players:[
-    {n:1,name:'Henderson',pos:'GK'},{n:44,name:'Benítez',pos:'GK'},{n:2,name:'Muñoz',pos:'RB'},
-    {n:3,name:'Mitchell',pos:'LB'},{n:5,name:'Lacroix',pos:'CB'},{n:7,name:'Sarr',pos:'RW'},
-    {n:8,name:'Lerma',pos:'DM'},{n:9,name:'Nketiah',pos:'ST'},{n:10,name:'Pino',pos:'AM'},
-    {n:11,name:'B. Johnson',pos:'LW'},{n:14,name:'Mateta',pos:'ST'},{n:17,name:'Clyne',pos:'RB'},
-    {n:18,name:'Kamada',pos:'CM'},{n:19,name:'Hughes',pos:'CM'},{n:20,name:'Wharton',pos:'DM'},
-    {n:22,name:'Strand Larsen',pos:'ST'},{n:24,name:'Sosa',pos:'LB'},{n:26,name:'Richards',pos:'CB'},
-    {n:28,name:'Doucouré',pos:'CM'},{n:34,name:'Riad',pos:'CB'}]},
-  'Everton':{kit:{body:'#003399',sleeve:'#003399',collar:'v'},players:[
-    {n:1,name:'Pickford',pos:'GK'},{n:12,name:'Travers',pos:'GK'},{n:2,name:'Patterson',pos:'RB'},
-    {n:5,name:'Keane',pos:'CB'},{n:6,name:'Tarkowski',pos:'CB'},{n:7,name:'McNeil',pos:'LW'},
-    {n:9,name:'Beto',pos:'ST'},{n:10,name:'Ndiaye',pos:'AM'},{n:11,name:'Barry',pos:'ST'},
-    {n:15,name:"O'Brien",pos:'CB'},{n:18,name:'Grealish',pos:'LW'},{n:19,name:'Mykolenko',pos:'LB'},
-    {n:20,name:'Dibling',pos:'RW'},{n:22,name:'Dewsbury-Hall',pos:'CM'},{n:24,name:'Alcaraz',pos:'CM'},
-    {n:27,name:'Gueye',pos:'DM'},{n:32,name:'Branthwaite',pos:'CB'},{n:34,name:'Rohl',pos:'CM'},
-    {n:37,name:'Garner',pos:'CM'},{n:42,name:'Iroegbunam',pos:'CM'}]},
-  'Fulham':{kit:{body:'#FFFFFF',sleeve:'#FFFFFF',collar:'round'},players:[
-    {n:1,name:'Leno',pos:'GK'},{n:23,name:'Lecomte',pos:'GK'},{n:2,name:'Tete',pos:'RB'},
-    {n:3,name:'Bassey',pos:'CB'},{n:5,name:'Andersen',pos:'CB'},{n:6,name:'Reed',pos:'DM'},
-    {n:7,name:'Jiménez',pos:'ST'},{n:8,name:'Wilson',pos:'RW'},{n:9,name:'Muniz',pos:'ST'},
-    {n:10,name:'Cairney',pos:'AM'},{n:15,name:'Cuenca',pos:'CB'},{n:16,name:'Berge',pos:'CM'},
-    {n:17,name:'Iwobi',pos:'CM'},{n:19,name:'Chukwueze',pos:'RW'},{n:20,name:'Lukić',pos:'DM'},
-    {n:21,name:'Castagne',pos:'RB'},{n:22,name:'Kevin',pos:'LW'},{n:31,name:'Sessegnon',pos:'LB'},
-    {n:32,name:'Smith Rowe',pos:'AM'},{n:33,name:'Diop',pos:'CB'}]},
-  'Liverpool':{kit:{body:'#C8102E',sleeve:'#C8102E',collar:'v'},players:[
-    {n:1,name:'Alisson',pos:'GK'},{n:25,name:'Mamardashvili',pos:'GK'},{n:2,name:'Gomez',pos:'CB'},
-    {n:3,name:'Endo',pos:'DM'},{n:4,name:'van Dijk',pos:'CB'},{n:5,name:'Konaté',pos:'CB'},
-    {n:6,name:'Kerkez',pos:'LB'},{n:7,name:'Wirtz',pos:'CM'},{n:8,name:'Szoboszlai',pos:'CM'},
-    {n:9,name:'Isak',pos:'ST'},{n:10,name:'Mac Allister',pos:'DM'},{n:11,name:'Salah',pos:'RW'},
-    {n:12,name:'Bradley',pos:'RB'},{n:14,name:'Chiesa',pos:'RW'},{n:17,name:'Jones',pos:'CM'},
-    {n:18,name:'Gakpo',pos:'LW'},{n:22,name:'Ekitike',pos:'ST'},{n:26,name:'Robertson',pos:'LB'},
-    {n:30,name:'Frimpong',pos:'RB'},{n:38,name:'Gravenberch',pos:'DM'}]},
-  'Man City':{kit:{body:'#6CABDD',sleeve:'#6CABDD',collar:'round'},players:[
-    {n:1,name:'Trafford',pos:'GK'},{n:25,name:'Donnarumma',pos:'GK'},{n:3,name:'Rúben Dias',pos:'CB'},
-    {n:4,name:'Reijnders',pos:'CM'},{n:5,name:'Stones',pos:'CB'},{n:6,name:'Aké',pos:'CB'},
-    {n:7,name:'Marmoush',pos:'ST'},{n:8,name:'Kovačić',pos:'CM'},{n:9,name:'Haaland',pos:'ST'},
-    {n:10,name:'Cherki',pos:'AM'},{n:11,name:'Doku',pos:'LW'},{n:14,name:'N. González',pos:'CM'},
-    {n:15,name:'Guéhi',pos:'CB'},{n:16,name:'Rodri',pos:'DM'},{n:20,name:'Bernardo',pos:'CM'},
-    {n:21,name:'Aït-Nouri',pos:'LB'},{n:24,name:'Gvardiol',pos:'LB'},{n:26,name:'Savinho',pos:'RW'},
-    {n:47,name:'Foden',pos:'RW'},{n:82,name:'R. Lewis',pos:'RB'}]},
-  'Man United':{kit:{body:'#DA020E',sleeve:'#DA020E',collar:'polo'},players:[
-    {n:1,name:'Bayındır',pos:'GK'},{n:24,name:'Onana',pos:'GK'},{n:2,name:'Dalot',pos:'RB'},
-    {n:3,name:'Mazraoui',pos:'CB'},{n:4,name:'de Ligt',pos:'CB'},{n:5,name:'Maguire',pos:'CB'},
-    {n:6,name:'L. Martínez',pos:'CB'},{n:7,name:'Mount',pos:'CM'},{n:8,name:'B. Fernandes',pos:'AM'},
-    {n:10,name:'Cunha',pos:'ST'},{n:11,name:'Zirkzee',pos:'ST'},{n:13,name:'Dorgu',pos:'LB'},
-    {n:15,name:'Yoro',pos:'CB'},{n:16,name:'Amad',pos:'RW'},{n:18,name:'Casemiro',pos:'DM'},
-    {n:19,name:'Mbeumo',pos:'RW'},{n:23,name:'Shaw',pos:'LB'},{n:25,name:'Ugarte',pos:'DM'},
-    {n:30,name:'Šeško',pos:'ST'},{n:37,name:'Mainoo',pos:'CM'}]},
-  'Newcastle':{kit:{body:'#241F20',sleeve:'#ffffff',stripeColor:'#ffffff',stripeType:'vertical',collar:'v'},players:[
-    {n:1,name:'Pope',pos:'GK'},{n:32,name:'Ramsdale',pos:'GK'},{n:2,name:'Trippier',pos:'RB'},
-    {n:3,name:'Hall',pos:'LB'},{n:4,name:'Botman',pos:'CB'},{n:5,name:'Schär',pos:'CB'},
-    {n:7,name:'Joelinton',pos:'CM'},{n:8,name:'Tonali',pos:'CM'},{n:9,name:'Wissa',pos:'ST'},
-    {n:10,name:'Gordon',pos:'LW'},{n:11,name:'Barnes',pos:'LW'},{n:12,name:'Thiaw',pos:'CB'},
-    {n:18,name:'Osula',pos:'ST'},{n:20,name:'Elanga',pos:'RW'},{n:21,name:'Livramento',pos:'RB'},
-    {n:23,name:'Murphy',pos:'RW'},{n:27,name:'Woltemade',pos:'ST'},{n:28,name:'Willock',pos:'CM'},
-    {n:39,name:'Guimarães',pos:'DM'},{n:41,name:'Ramsey',pos:'CM'}]},
-  'Nottm Forest':{kit:{body:'#DD0000',sleeve:'#DD0000',collar:'round'},players:[
-    {n:26,name:'Sels',pos:'GK'},{n:18,name:'Gunn',pos:'GK'},{n:3,name:'N. Williams',pos:'LB'},
-    {n:4,name:'Morato',pos:'CB'},{n:5,name:'Murillo',pos:'CB'},{n:6,name:'Sangaré',pos:'DM'},
-    {n:7,name:'Hudson-Odoi',pos:'RW'},{n:8,name:'Anderson',pos:'CM'},{n:9,name:'Awoniyi',pos:'ST'},
-    {n:10,name:'Gibbs-White',pos:'AM'},{n:11,name:'Wood',pos:'ST'},{n:14,name:'Ndoye',pos:'RW'},
-    {n:17,name:'da Silva',pos:'RB'},{n:19,name:'I. Jesus',pos:'ST'},{n:20,name:'Lucca',pos:'ST'},
-    {n:21,name:'Hutchinson',pos:'AM'},{n:22,name:'Yates',pos:'CM'},{n:24,name:'McAtee',pos:'CM'},
-    {n:25,name:'Netz',pos:'LB'},{n:34,name:'Aina',pos:'RB'}]},
-  'Spurs':{kit:{body:'#FFFFFF',sleeve:'#FFFFFF',collar:'v'},players:[
-    {n:1,name:'Vicario',pos:'GK'},{n:31,name:'Kinský',pos:'GK'},{n:3,name:'Drăgușin',pos:'CB'},
-    {n:4,name:'Danso',pos:'CB'},{n:6,name:'Palhinha',pos:'DM'},{n:7,name:'X. Simons',pos:'AM'},
-    {n:8,name:'Bissouma',pos:'DM'},{n:9,name:'Richarlison',pos:'ST'},{n:10,name:'Maddison',pos:'AM'},
-    {n:11,name:'Tel',pos:'LW'},{n:13,name:'Udogie',pos:'LB'},{n:14,name:'Gray',pos:'CM'},
-    {n:15,name:'Bergvall',pos:'CM'},{n:17,name:'Romero',pos:'CB'},{n:19,name:'Solanke',pos:'ST'},
-    {n:20,name:'Kudus',pos:'RW'},{n:21,name:'Kulusevski',pos:'RW'},{n:22,name:'Gallagher',pos:'CM'},
-    {n:23,name:'Porro',pos:'RB'},{n:29,name:'Bentancur',pos:'CM'}]},
-  'West Ham':{kit:{body:'#7A263A',sleeve:'#1BB1E7',collar:'round'},players:[
-    {n:1,name:'Hermansen',pos:'GK'},{n:22,name:'Fabianski',pos:'GK'},{n:2,name:'Walker-Peters',pos:'RB'},
-    {n:3,name:'Kilman',pos:'CB'},{n:4,name:'Disasi',pos:'CB'},{n:7,name:'Summerville',pos:'LW'},
-    {n:9,name:'C. Wilson',pos:'ST'},{n:11,name:'Castellanos',pos:'ST'},{n:12,name:'Diouf',pos:'LB'},
-    {n:15,name:'Mavropanos',pos:'CB'},{n:17,name:'Traore',pos:'RW'},{n:18,name:'Fernandes',pos:'CM'},
-    {n:19,name:'Felipe',pos:'LW'},{n:20,name:'Bowen',pos:'RW'},{n:25,name:'Todibo',pos:'CB'},
-    {n:27,name:'Magassa',pos:'DM'},{n:28,name:'Souček',pos:'CM'},{n:29,name:'Wan-Bissaka',pos:'RB'},
-    {n:23,name:'Areola',pos:'GK'},{n:32,name:'Potts',pos:'CM'}]},
-  'Wolves':{kit:{body:'#FDB913',sleeve:'#231F20',collar:'v'},players:[
-    {n:1,name:'Sá',pos:'GK'},{n:31,name:'Johnstone',pos:'GK'},{n:2,name:'Doherty',pos:'RB'},
-    {n:3,name:'Bueno',pos:'LB'},{n:4,name:'S. Bueno',pos:'CB'},{n:6,name:'Wolfe',pos:'CB'},
-    {n:7,name:'André',pos:'DM'},{n:8,name:'Gomes',pos:'CM'},{n:9,name:'Armstrong',pos:'ST'},
-    {n:11,name:'Hwang',pos:'ST'},{n:14,name:'Arokodare',pos:'ST'},{n:15,name:'Mosquera',pos:'CB'},
-    {n:17,name:'Lima',pos:'RB'},{n:21,name:'R. Gomes',pos:'RW'},{n:24,name:'Toti',pos:'CB'},
-    {n:27,name:'Bellegarde',pos:'CM'},{n:30,name:'González',pos:'LW'},{n:36,name:'Mané',pos:'RW'},
-    {n:37,name:'Krejčí',pos:'CB'},{n:47,name:'A. Gomes',pos:'AM'}]},
+    {n:1,name:'Suzuki',pos:'GK'},{n:23,name:'Martínez',pos:'GK'},{n:3,name:'Lindelöf',pos:'CB'},
+    {n:4,name:'Konsa',pos:'CB'},{n:5,name:'Mings',pos:'CB'},{n:14,name:'Torres',pos:'CB'},
+    {n:2,name:'Cash',pos:'RB'},{n:13,name:'Ruggeri',pos:'LB'},{n:22,name:'Maatsen',pos:'LB'},
+    {n:8,name:'Kamara',pos:'DM'},{n:24,name:'Onana',pos:'DM'},{n:7,name:'McGinn',pos:'CM'},
+    {n:35,name:'João Gomes',pos:'CM'},{n:44,name:'Manzambi',pos:'CM'},{n:10,name:'Buendía',pos:'AM'},
+    {n:17,name:'Garnacho',pos:'LW'},{n:31,name:'Bailey',pos:'RW'},{n:6,name:'Barkley',pos:'CM'},
+    {n:11,name:'Watkins',pos:'ST'},{n:18,name:'Abraham',pos:'ST'},{n:20,name:'Jimoh-Aloba',pos:'AM'},
+    {n:26,name:'Bogarde',pos:'DM'},{n:40,name:'Bizot',pos:'GK'},{n:47,name:'Alysson',pos:'RW'},
+    {n:48,name:'Cissé',pos:'CB'},{n:49,name:'Burrowes',pos:'CM'},{n:53,name:'Hemmings',pos:'CM'}]},
   'Bournemouth':{kit:{body:'#DA291C',sleeve:'#000000',collar:'round'},players:[
-    {n:1,name:'Neto',pos:'GK'},{n:13,name:'Travers',pos:'GK'},{n:2,name:'Smith',pos:'RB'},
-    {n:3,name:'Kerkez',pos:'LB'},{n:4,name:'Christie',pos:'CM'},{n:5,name:'Senesi',pos:'CB'},
-    {n:6,name:'Kelly',pos:'CB'},{n:8,name:'Cook',pos:'DM'},{n:9,name:'Evanilson',pos:'ST'},
-    {n:11,name:'Dango',pos:'LW'},{n:16,name:'Scott',pos:'CM'},{n:17,name:'Sinisterra',pos:'LW'},
-    {n:19,name:'Kluivert',pos:'AM'},{n:21,name:'Jebbison',pos:'ST'},{n:24,name:'Semenyo',pos:'RW'},
-    {n:25,name:'Billing',pos:'CM'},{n:26,name:'Ünal',pos:'ST'},{n:27,name:'Brooks',pos:'AM'},
-    {n:28,name:'Tavernier',pos:'RW'},{n:30,name:'Hill',pos:'CB'}]},
+    {n:1,name:'Petrović',pos:'GK'},{n:17,name:'Forster',pos:'GK'},{n:14,name:'A. Silva',pos:'CB'},
+    {n:18,name:'Diakité',pos:'CB'},{n:44,name:'Milosavljević',pos:'CB'},{n:2,name:'Araujo',pos:'RB'},
+    {n:24,name:'Juanlu',pos:'RB'},{n:3,name:'Truffert',pos:'LB'},{n:6,name:'Soler',pos:'LB'},
+    {n:12,name:'Adams',pos:'DM'},{n:4,name:'Cook',pos:'CM'},{n:10,name:'Christie',pos:'CM'},
+    {n:8,name:'Scott',pos:'CM'},{n:19,name:'Kluivert',pos:'AM'},{n:21,name:'Adli',pos:'LW'},
+    {n:16,name:'Tavernier',pos:'RW'},{n:11,name:'Gannon-Doak',pos:'RW'},{n:9,name:'Evanilson',pos:'ST'},
+    {n:22,name:'Kroupi',pos:'ST'},{n:30,name:'Á. Rodríguez',pos:'ST'},{n:5,name:'Hill',pos:'CB'},
+    {n:7,name:'Brooks',pos:'AM'},{n:15,name:'Smith',pos:'RB'},{n:27,name:'Tóth',pos:'CM'},
+    {n:28,name:'Aarons',pos:'RB'},{n:29,name:'Jebbison',pos:'ST'},{n:37,name:'Rayan',pos:'ST'},
+    {n:40,name:'Dennis',pos:'GK'},{n:45,name:'Akinmboni',pos:'CB'},{n:47,name:'Winterburn',pos:'DM'},
+    {n:50,name:'Rees-Dottin',pos:'RW'}]},
+  'Brentford':{kit:{body:'#e30613',sleeve:'#e30613',stripeColor:'#ffffff',stripeType:'vertical',collar:'round'},players:[
+    {n:1,name:'Kelleher',pos:'GK'},{n:12,name:'Valdimarsson',pos:'GK'},{n:5,name:'Pinnock',pos:'CB'},
+    {n:22,name:'Collins',pos:'CB'},{n:4,name:'van den Berg',pos:'CB'},{n:2,name:'Hickey',pos:'RB'},
+    {n:33,name:'Kayode',pos:'RB'},{n:3,name:'Henry',pos:'LB'},{n:21,name:'Meghoma',pos:'LB'},
+    {n:18,name:'Sangaré',pos:'DM'},{n:27,name:'Janelt',pos:'DM'},{n:6,name:'Yarmolyuk',pos:'CM'},
+    {n:8,name:'Jensen',pos:'CM'},{n:24,name:'Damsgaard',pos:'AM'},{n:14,name:'Carvalho',pos:'AM'},
+    {n:7,name:'Schade',pos:'LW'},{n:23,name:'Lewis-Potter',pos:'LW'},{n:11,name:'Ouattara',pos:'RW'},
+    {n:9,name:'Thiago',pos:'ST'},{n:13,name:'C. Wilson',pos:'ST'},{n:10,name:'Dasilva',pos:'CM'},
+    {n:17,name:'Milambo',pos:'AM'},{n:19,name:'Anthony',pos:'LW'},{n:20,name:'Ajer',pos:'CB'},
+    {n:31,name:'Balcombe',pos:'GK'},{n:36,name:'Ji-soo',pos:'CB'},{n:39,name:'Nunes',pos:'LW'},
+    {n:44,name:'Schuster',pos:'CB'},{n:47,name:'Furo',pos:'ST'},{n:48,name:'Fredrick',pos:'CB'}]},
+  'Brighton':{kit:{body:'#0057B8',sleeve:'#ffffff',stripeColor:'#ffffff',stripeType:'vertical',collar:'v'},players:[
+    {n:1,name:'Verbruggen',pos:'GK'},{n:23,name:'Steele',pos:'GK'},{n:5,name:'Dunk',pos:'CB'},
+    {n:4,name:'Struijk',pos:'CB'},{n:44,name:'Vušković',pos:'CB'},{n:3,name:'Igor',pos:'CB'},
+    {n:20,name:'Costinha',pos:'RB'},{n:24,name:'Kadioglu',pos:'LB'},{n:29,name:'De Cuyper',pos:'LB'},
+    {n:17,name:'Baleba',pos:'DM'},{n:27,name:'Wieffer',pos:'DM'},{n:26,name:'Ayari',pos:'CM'},
+    {n:8,name:'Hinshelwood',pos:'CM'},{n:33,name:"O'Riley",pos:'AM'},{n:10,name:'Rutter',pos:'AM'},
+    {n:7,name:'Mitoma',pos:'LW'},{n:11,name:'Minteh',pos:'RW'},{n:36,name:'Yohanna',pos:'RW'},
+    {n:9,name:'Tzimas',pos:'ST'},{n:28,name:'Ferguson',pos:'ST'},{n:12,name:'David',pos:'ST'},
+    {n:13,name:'Groß',pos:'CM'},{n:15,name:'Osman',pos:'RW'},{n:16,name:'Cashin',pos:'CB'},
+    {n:19,name:'Kostoulas',pos:'ST'},{n:21,name:'Boscagli',pos:'CB'},{n:22,name:'Cozier-Duberry',pos:'RW'},
+    {n:25,name:'Gómez',pos:'DM'},{n:30,name:'Svoboda',pos:'CB'},{n:35,name:'Yalcouyé',pos:'DM'},
+    {n:38,name:'McGill',pos:'GK'}]},
+  'Chelsea':{kit:{body:'#034694',sleeve:'#034694',collar:'round'},players:[
+    {n:1,name:'Sánchez',pos:'GK'},{n:39,name:'Penders',pos:'GK'},{n:3,name:'Fofana',pos:'CB'},
+    {n:5,name:'Lacroix',pos:'CB'},{n:6,name:'Colwill',pos:'CB'},{n:38,name:'Tosin',pos:'CB'},
+    {n:24,name:'James',pos:'RB'},{n:27,name:'Gusto',pos:'RB'},{n:21,name:'Hato',pos:'LB'},
+    {n:29,name:'Chavarría',pos:'LB'},{n:25,name:'Caicedo',pos:'DM'},{n:45,name:'Lavia',pos:'DM'},
+    {n:8,name:'Fernández',pos:'CM'},{n:10,name:'Palmer',pos:'AM'},{n:17,name:'Rogers',pos:'AM'},
+    {n:7,name:'Pedro Neto',pos:'RW'},{n:41,name:'Estêvão',pos:'RW'},{n:11,name:'Gittens',pos:'LW'},
+    {n:9,name:'João Pedro',pos:'ST'},{n:12,name:'Delap',pos:'ST'},{n:2,name:'Palestra',pos:'RB'},
+    {n:4,name:'Barco',pos:'LB'},{n:14,name:'Henderson',pos:'CM'},{n:15,name:'Jackson',pos:'ST'},
+    {n:16,name:'Essugo',pos:'DM'},{n:18,name:'Welbeck',pos:'ST'},{n:19,name:'Sarr',pos:'CB'},
+    {n:22,name:'Emegha',pos:'ST'},{n:23,name:'Quenda',pos:'RW'},{n:28,name:'Sharman-Lowe',pos:'GK'},
+    {n:30,name:'Anselmino',pos:'CB'},{n:31,name:'Watson',pos:'CM'},{n:32,name:'Nicoll-Jazuli',pos:'CM'},
+    {n:33,name:'Mudryk',pos:'LW'},{n:34,name:'Acheampong',pos:'CB'},{n:37,name:'Subuloye',pos:'CB'},
+    {n:44,name:'Slonina',pos:'GK'}]},
+  'Coventry City':{kit:{body:'#6CADDF',sleeve:'#6CADDF',collar:'round'},players:[
+    {n:1,name:'Dovin',pos:'GK'},{n:19,name:'Rushworth',pos:'GK'},{n:4,name:'B. Thomas',pos:'CB'},
+    {n:15,name:'Kitching',pos:'CB'},{n:24,name:'Amenda',pos:'CB'},{n:27,name:'van Ewijk',pos:'RB'},
+    {n:20,name:'Kesler-Hayden',pos:'RB'},{n:3,name:'Dasilva',pos:'LB'},{n:21,name:'Bidwell',pos:'LB'},
+    {n:16,name:'Onyeka',pos:'DM'},{n:6,name:'Grimes',pos:'DM'},{n:38,name:'Hamer',pos:'CM'},
+    {n:8,name:'Yirenkyi',pos:'CM'},{n:5,name:'Rudoni',pos:'AM'},{n:7,name:'Sakamoto',pos:'RW'},
+    {n:18,name:'Tchaouna',pos:'RW'},{n:10,name:'Mason-Clark',pos:'LW'},{n:9,name:'Simms',pos:'ST'},
+    {n:14,name:'Awoniyi',pos:'ST'},{n:11,name:'H. Wright',pos:'ST'},{n:13,name:'Wilson',pos:'GK'},
+    {n:17,name:'Raphael',pos:'RW'},{n:22,name:'Latibeaudiere',pos:'CB'},{n:23,name:'Thomas-Asante',pos:'ST'},
+    {n:26,name:'Woolfenden',pos:'CB'},{n:28,name:'Eccles',pos:'CM'},{n:29,name:'Torp',pos:'CM'},
+    {n:33,name:'Brau',pos:'LB'},{n:49,name:'Cherif',pos:'ST'}]},
+  'Crystal Palace':{kit:{body:'#1B458F',sleeve:'#C4122E',stripeColor:'#C4122E',stripeType:'vertical',collar:'round'},players:[
+    {n:1,name:'Henderson',pos:'GK'},{n:44,name:'Benítez',pos:'GK'},{n:4,name:'Riad',pos:'CB'},
+    {n:26,name:'Richards',pos:'CB'},{n:6,name:'Canvot',pos:'CB'},{n:2,name:'Muñoz',pos:'RB'},
+    {n:30,name:'Mingueza',pos:'RB'},{n:3,name:'Mitchell',pos:'LB'},{n:24,name:'Sosa',pos:'LB'},
+    {n:8,name:'Lerma',pos:'DM'},{n:20,name:'Wharton',pos:'DM'},{n:19,name:'Hughes',pos:'CM'},
+    {n:18,name:'Kamada',pos:'AM'},{n:7,name:'Sarr',pos:'RW'},{n:10,name:'Pino',pos:'RW'},
+    {n:25,name:'Khalaili',pos:'RW'},{n:11,name:'McNeil',pos:'LW'},{n:14,name:'Mateta',pos:'ST'},
+    {n:9,name:'Nketiah',pos:'ST'},{n:22,name:'Strand Larsen',pos:'ST'},{n:17,name:'Tomiyasu',pos:'CB'},
+    {n:21,name:'Esse',pos:'AM'},{n:27,name:'França',pos:'AM'},{n:28,name:'Doucouré',pos:'DM'},
+    {n:29,name:'Guessand',pos:'ST'},{n:31,name:'Matthews',pos:'GK'},{n:32,name:'Whitworth',pos:'GK'},
+    {n:49,name:'Rak-Sakyi',pos:'RW'},{n:52,name:'Ozoh',pos:'CM'},{n:55,name:'Devenny',pos:'CM'}]},
+  'Everton':{kit:{body:'#003399',sleeve:'#003399',collar:'v'},players:[
+    {n:1,name:'Pickford',pos:'GK'},{n:12,name:'Travers',pos:'GK'},{n:4,name:'Branthwaite',pos:'CB'},
+    {n:6,name:'Tarkowski',pos:'CB'},{n:5,name:'Keane',pos:'CB'},{n:2,name:'Patterson',pos:'RB'},
+    {n:15,name:"O'Brien",pos:'RB'},{n:16,name:'Mykolenko',pos:'LB'},{n:39,name:'Aznou',pos:'LB'},
+    {n:23,name:'Nørgaard',pos:'DM'},{n:30,name:'Hackney',pos:'DM'},{n:37,name:'Garner',pos:'CM'},
+    {n:8,name:'Dewsbury-Hall',pos:'CM'},{n:34,name:'Röhl',pos:'AM'},{n:10,name:'Ndiaye',pos:'AM'},
+    {n:20,name:'Dibling',pos:'RW'},{n:22,name:'B. Johnson',pos:'RW'},{n:19,name:'T. George',pos:'LW'},
+    {n:9,name:'Beto',pos:'ST'},{n:11,name:'Barry',pos:'ST'},{n:24,name:'Alcaraz',pos:'AM'},
+    {n:31,name:'King',pos:'GK'},{n:42,name:'Iroegbunam',pos:'DM'},{n:45,name:'Armstrong',pos:'CM'}]},
+  'Fulham':{kit:{body:'#FFFFFF',sleeve:'#FFFFFF',collar:'round'},players:[
+    {n:1,name:'Leno',pos:'GK'},{n:23,name:'Lecomte',pos:'GK'},{n:3,name:'Bassey',pos:'CB'},
+    {n:5,name:'Andersen',pos:'CB'},{n:4,name:'Cuenca',pos:'CB'},{n:2,name:'Tete',pos:'RB'},
+    {n:21,name:'Castagne',pos:'RB'},{n:33,name:'Robinson',pos:'LB'},{n:30,name:'Sessegnon',pos:'LB'},
+    {n:6,name:'Reed',pos:'DM'},{n:19,name:'Charles',pos:'DM'},{n:16,name:'Berge',pos:'CM'},
+    {n:17,name:'Iwobi',pos:'CM'},{n:8,name:'Palacios',pos:'AM'},{n:32,name:'Smith Rowe',pos:'AM'},
+    {n:11,name:'Kevin',pos:'LW'},{n:14,name:'Bobb',pos:'RW'},{n:7,name:'G. García',pos:'ST'},
+    {n:9,name:'Muniz',pos:'ST'},{n:18,name:'Kusi-Asare',pos:'ST'},{n:10,name:'Cairney',pos:'CM'},
+    {n:24,name:'King',pos:'CM'},{n:38,name:'Harris',pos:'AM'}]},
+  'Hull City':{kit:{body:'#F18A01',sleeve:'#000000',stripeColor:'#000000',stripeType:'vertical',collar:'v'},players:[
+    {n:1,name:'Butland',pos:'GK'},{n:19,name:'Tzolakis',pos:'GK'},{n:4,name:'C. Hughes',pos:'CB'},
+    {n:6,name:'Ajayi',pos:'CB'},{n:17,name:'McNair',pos:'CB'},{n:32,name:'Mendy',pos:'CB'},
+    {n:2,name:'Coyle',pos:'RB'},{n:18,name:'Drameh',pos:'RB'},{n:3,name:'Giles',pos:'LB'},
+    {n:16,name:'Jacob',pos:'LB'},{n:8,name:'Matazo',pos:'DM'},{n:20,name:'Zambrano',pos:'DM'},
+    {n:5,name:'Morita',pos:'CM'},{n:24,name:'Gyabi',pos:'CM'},{n:26,name:'Dowell',pos:'AM'},
+    {n:33,name:'Ömür',pos:'AM'},{n:7,name:'Millar',pos:'LW'},{n:10,name:'Belloumi',pos:'RW'},
+    {n:11,name:'Akintola',pos:'RW'},{n:9,name:'McBurnie',pos:'ST'},{n:12,name:'Phillips',pos:'GK'},
+    {n:14,name:'Hjertø-Dahl',pos:'CM'},{n:15,name:'Egan',pos:'CB'},{n:21,name:'Stroud',pos:'LW'},
+    {n:22,name:'Herrington',pos:'CB'},{n:23,name:'Targett',pos:'LB'},{n:25,name:'Crooks',pos:'CM'},
+    {n:27,name:'Slater',pos:'CM'},{n:29,name:'Gourna-Douath',pos:'DM'},{n:41,name:'Sellars-Fleming',pos:'ST'}]},
+  'Ipswich Town':{kit:{body:'#0044A9',sleeve:'#FFFFFF',collar:'round'},players:[
+    {n:1,name:'Palmer',pos:'GK'},{n:28,name:'Walton',pos:'GK'},{n:4,name:'Kipré',pos:'CB'},
+    {n:6,name:'Diop',pos:'CB'},{n:24,name:'Greaves',pos:'CB'},{n:26,name:"O'Shea",pos:'CB'},
+    {n:2,name:'Furlong',pos:'RB'},{n:18,name:'B. Johnson',pos:'RB'},{n:3,name:'Davis',pos:'LB'},
+    {n:42,name:'Ouattara',pos:'LB'},{n:5,name:'Matusiwa',pos:'DM'},{n:12,name:'Florentino',pos:'DM'},
+    {n:23,name:'Lukić',pos:'CM'},{n:32,name:'Núñez',pos:'CM'},{n:10,name:'Enciso',pos:'AM'},
+    {n:7,name:'Fatawu',pos:'RW'},{n:11,name:'Philogene',pos:'LW'},{n:38,name:'Maeda',pos:'LW'},
+    {n:19,name:'Emersonn',pos:'ST'},{n:29,name:'Akpom',pos:'ST'},{n:8,name:'Egeli',pos:'ST'},
+    {n:14,name:'Taylor',pos:'CM'},{n:20,name:'McAteer',pos:'RW'},{n:21,name:'Ogbene',pos:'RW'},
+    {n:27,name:'Button',pos:'GK'},{n:30,name:'Humphreys',pos:'CM'},{n:31,name:'van Oevelen',pos:'GK'},
+    {n:33,name:'Mehmeti',pos:'LW'},{n:37,name:'Scherpen',pos:'GK'},{n:47,name:'Clarke',pos:'LW'}]},
   'Leeds United':{kit:{body:'#FFFFFF',sleeve:'#FFFFFF',collar:'round'},players:[
-    {n:1,name:'Perri',pos:'GK'},{n:26,name:'Darlow',pos:'GK'},{n:2,name:'Bogle',pos:'RB'},
-    {n:3,name:'Gudmundsson',pos:'LB'},{n:4,name:'Ampadu',pos:'DM'},{n:5,name:'Struijk',pos:'CB'},
-    {n:6,name:'Rodon',pos:'CB'},{n:7,name:'James',pos:'LW'},{n:8,name:'Longstaff',pos:'CM'},
-    {n:9,name:'Calvert-Lewin',pos:'ST'},{n:10,name:'Piroe',pos:'AM'},{n:11,name:'Aaronson',pos:'CM'},
-    {n:14,name:'Nmecha',pos:'ST'},{n:15,name:'Bijol',pos:'CB'},{n:18,name:'Stach',pos:'CM'},
-    {n:19,name:'Okafor',pos:'LW'},{n:20,name:'Harrison',pos:'RW'},{n:22,name:'Tanaka',pos:'CM'},
-    {n:24,name:'Justin',pos:'RB'},{n:29,name:'Gnonto',pos:'RW'}]},
-  'Burnley':{kit:{body:'#6C1D45',sleeve:'#6C1D45',collar:'v'},players:[
-    {n:1,name:'Dúbravka',pos:'GK'},{n:32,name:'Hladký',pos:'GK'},{n:2,name:'Walker',pos:'RB'},
-    {n:3,name:'Hartman',pos:'LB'},{n:4,name:'Worrall',pos:'CB'},{n:5,name:'Estève',pos:'CB'},
-    {n:6,name:'Tuanzebe',pos:'CB'},{n:7,name:'Bruun Larsen',pos:'RW'},{n:8,name:'Ugochukwu',pos:'DM'},
-    {n:9,name:'Foster',pos:'ST'},{n:10,name:'Edwards',pos:'LW'},{n:14,name:'Roberts',pos:'RB'},
-    {n:16,name:'Florentino',pos:'DM'},{n:17,name:'Tchaouna',pos:'LW'},{n:19,name:'Flemming',pos:'AM'},
-    {n:20,name:'Ward-Prowse',pos:'CM'},{n:24,name:'Cullen',pos:'CM'},{n:25,name:'Amdouni',pos:'ST'},
-    {n:27,name:'Broja',pos:'ST'},{n:31,name:'Trésor',pos:'LW'}]},
+    {n:1,name:'Trafford',pos:'GK'},{n:21,name:'Cairns',pos:'GK'},{n:6,name:'Rodon',pos:'CB'},
+    {n:15,name:'Bijol',pos:'CB'},{n:5,name:'Muharemović',pos:'CB'},{n:2,name:'Bogle',pos:'RB'},
+    {n:24,name:'Justin',pos:'RB'},{n:3,name:'Gudmundsson',pos:'LB'},{n:4,name:'Ampadu',pos:'DM'},
+    {n:44,name:'Gruev',pos:'DM'},{n:18,name:'Stach',pos:'CM'},{n:8,name:'Longstaff',pos:'CM'},
+    {n:22,name:'Tanaka',pos:'CM'},{n:11,name:'Aaronson',pos:'AM'},{n:7,name:'D. James',pos:'LW'},
+    {n:19,name:'Okafor',pos:'LW'},{n:29,name:'Gnonto',pos:'RW'},{n:17,name:'H. Wilson',pos:'RW'},
+    {n:9,name:'Calvert-Lewin',pos:'ST'},{n:14,name:'Nmecha',pos:'ST'}]},
+  'Liverpool':{kit:{body:'#C8102E',sleeve:'#C8102E',collar:'v'},players:[
+    {n:1,name:'Alisson',pos:'GK'},{n:25,name:'Mamardashvili',pos:'GK'},{n:4,name:'van Dijk',pos:'CB'},
+    {n:5,name:'Jacquet',pos:'CB'},{n:15,name:'Leoni',pos:'CB'},{n:2,name:'Gomez',pos:'CB'},
+    {n:12,name:'Bradley',pos:'RB'},{n:30,name:'Frimpong',pos:'RB'},{n:6,name:'Kerkez',pos:'LB'},
+    {n:21,name:'Tsimikas',pos:'LB'},{n:3,name:'Endo',pos:'DM'},{n:38,name:'Gravenberch',pos:'DM'},
+    {n:10,name:'Mac Allister',pos:'CM'},{n:8,name:'Szoboszlai',pos:'CM'},{n:17,name:'Jones',pos:'CM'},
+    {n:7,name:'Wirtz',pos:'AM'},{n:18,name:'Gakpo',pos:'LW'},{n:14,name:'Chiesa',pos:'RW'},
+    {n:9,name:'Isak',pos:'ST'},{n:22,name:'Ekitike',pos:'ST'},{n:19,name:'Elliott',pos:'AM'},
+    {n:23,name:'Muñoz',pos:'LW'},{n:28,name:'Woodman',pos:'GK'},{n:33,name:'Araújo',pos:'CB'},
+    {n:41,name:'Pécsi',pos:'GK'},{n:42,name:'Nyoni',pos:'CM'},{n:43,name:'Bajcetic',pos:'DM'},
+    {n:47,name:'Ramsay',pos:'RB'},{n:53,name:'McConnell',pos:'AM'},{n:56,name:'Jaroš',pos:'GK'},
+    {n:73,name:'Ngumoha',pos:'LW'},{n:95,name:'Davies',pos:'GK'}]},
+  'Man City':{kit:{body:'#6CABDD',sleeve:'#6CABDD',collar:'round'},players:[
+    {n:1,name:'Donnarumma',pos:'GK'},{n:28,name:'Rulli',pos:'GK'},{n:3,name:'Rúben Dias',pos:'CB'},
+    {n:6,name:'Guéhi',pos:'CB'},{n:45,name:'Khusanov',pos:'CB'},{n:24,name:'Gvardiol',pos:'LB'},
+    {n:21,name:'Aït-Nouri',pos:'LB'},{n:82,name:'R. Lewis',pos:'RB'},{n:27,name:'M. Nunes',pos:'RB'},
+    {n:5,name:'E. Anderson',pos:'DM'},{n:14,name:'N. González',pos:'DM'},{n:8,name:'Kovačić',pos:'CM'},
+    {n:33,name:"O'Reilly",pos:'CM'},{n:10,name:'Cherki',pos:'AM'},{n:47,name:'Foden',pos:'AM'},
+    {n:11,name:'Doku',pos:'LW'},{n:26,name:'Savinho',pos:'RW'},{n:42,name:'Semenyo',pos:'RW'},
+    {n:9,name:'Haaland',pos:'ST'},{n:7,name:'Marmoush',pos:'ST'},{n:13,name:'Bettinelli',pos:'GK'},
+    {n:18,name:'Grealish',pos:'LW'},{n:22,name:'Reis',pos:'CB'},{n:30,name:'Echeverri',pos:'AM'},
+    {n:40,name:'Monga',pos:'LW'},{n:41,name:'Nypan',pos:'AM'},{n:44,name:'Phillips',pos:'DM'},
+    {n:59,name:'Wilson-Esbrand',pos:'LB'}]},
+  'Man United':{kit:{body:'#DA020E',sleeve:'#DA020E',collar:'polo'},players:[
+    {n:1,name:'Lammens',pos:'GK'},{n:22,name:'Heaton',pos:'GK'},{n:4,name:'de Ligt',pos:'CB'},
+    {n:5,name:'Maguire',pos:'CB'},{n:6,name:'L. Martínez',pos:'CB'},{n:15,name:'Yoro',pos:'CB'},
+    {n:2,name:'Dalot',pos:'RB'},{n:3,name:'Mazraoui',pos:'RB'},{n:13,name:'Dorgu',pos:'LB'},
+    {n:23,name:'Shaw',pos:'LB'},{n:25,name:'Ugarte',pos:'DM'},{n:18,name:'Tielemans',pos:'CM'},
+    {n:17,name:'A. Santos',pos:'CM'},{n:37,name:'Mainoo',pos:'CM'},{n:8,name:'B. Fernandes',pos:'AM'},
+    {n:16,name:'Amad',pos:'RW'},{n:19,name:'Mbeumo',pos:'RW'},{n:10,name:'Cunha',pos:'LW'},
+    {n:30,name:'Šeško',pos:'ST'},{n:11,name:'Zirkzee',pos:'ST'},{n:7,name:'Mount',pos:'AM'},
+    {n:12,name:'Darlow',pos:'GK'},{n:26,name:'Heaven',pos:'CB'},{n:38,name:'Fletcher',pos:'CM'},
+    {n:39,name:'T. Fletcher',pos:'CM'},{n:41,name:'Amass',pos:'LB'},{n:43,name:'Collyer',pos:'DM'},
+    {n:45,name:'Mee',pos:'GK'},{n:46,name:'Lacey',pos:'AM'}]},
+  'Newcastle':{kit:{body:'#241F20',sleeve:'#ffffff',stripeColor:'#ffffff',stripeType:'vertical',collar:'v'},players:[
+    {n:1,name:'Pope',pos:'GK'},{n:21,name:'Horníček',pos:'GK'},{n:4,name:'Botman',pos:'CB'},
+    {n:5,name:'Schär',pos:'CB'},{n:12,name:'Thiaw',pos:'CB'},{n:33,name:'Burn',pos:'CB'},
+    {n:2,name:'Livramento',pos:'RB'},{n:37,name:'Dedić',pos:'RB'},{n:3,name:'Hall',pos:'LB'},
+    {n:8,name:'Bamba',pos:'DM'},{n:67,name:'Miley',pos:'DM'},{n:7,name:'Joelinton',pos:'CM'},
+    {n:28,name:'Willock',pos:'CM'},{n:14,name:'Steur',pos:'CM'},{n:41,name:'Ramsey',pos:'AM'},
+    {n:11,name:'Barnes',pos:'LW'},{n:19,name:'Elanga',pos:'RW'},{n:23,name:'Murphy',pos:'RW'},
+    {n:27,name:'Woltemade',pos:'ST'},{n:9,name:'Wissa',pos:'ST'},{n:10,name:'Osula',pos:'ST'},
+    {n:17,name:'Touré',pos:'LW'},{n:24,name:'Jaouen',pos:'GK'},{n:29,name:'Gillespie',pos:'GK'}]},
+  'Nottm Forest':{kit:{body:'#DD0000',sleeve:'#DD0000',collar:'round'},players:[
+    {n:26,name:'Sels',pos:'GK'},{n:12,name:'J. Victor',pos:'GK'},{n:2,name:'Diomande',pos:'CB'},
+    {n:5,name:'Murillo',pos:'CB'},{n:31,name:'Milenković',pos:'CB'},{n:4,name:'Morato',pos:'CB'},
+    {n:34,name:'Aina',pos:'RB'},{n:37,name:'Savona',pos:'RB'},{n:3,name:'N. Williams',pos:'LB'},
+    {n:25,name:'Netz',pos:'LB'},{n:6,name:'Sangaré',pos:'DM'},{n:21,name:'Schlager',pos:'CM'},
+    {n:8,name:'Domínguez',pos:'CM'},{n:22,name:'Yates',pos:'CM'},{n:10,name:'Gibbs-White',pos:'AM'},
+    {n:24,name:'McAtee',pos:'AM'},{n:7,name:'Hudson-Odoi',pos:'LW'},{n:14,name:'Ndoye',pos:'RW'},
+    {n:9,name:'Wood',pos:'ST'},{n:15,name:'Kalimuendo',pos:'ST'},{n:11,name:'Jesus',pos:'ST'},
+    {n:17,name:'Moreira',pos:'RB'},{n:20,name:'Hutchinson',pos:'RW'},{n:23,name:'Cunha',pos:'CB'},
+    {n:27,name:'Richards',pos:'LB'},{n:29,name:'Bakwa',pos:'RW'},{n:32,name:'Bindon',pos:'CB'},
+    {n:44,name:'Abbott',pos:'CB'},{n:49,name:'McDonnell',pos:'CM'},{n:61,name:'Sinclair',pos:'CM'}]},
+  'Spurs':{kit:{body:'#FFFFFF',sleeve:'#FFFFFF',collar:'v'},players:[
+    {n:31,name:'Kinský',pos:'GK'},{n:39,name:'Dúbravka',pos:'GK'},{n:37,name:'van de Ven',pos:'CB'},
+    {n:4,name:'Danso',pos:'CB'},{n:5,name:'Senesi',pos:'CB'},{n:6,name:'van Hecke',pos:'CB'},
+    {n:23,name:'Porro',pos:'RB'},{n:13,name:'Udogie',pos:'LB'},{n:3,name:'Robertson',pos:'LB'},
+    {n:16,name:'Tonali',pos:'DM'},{n:30,name:'Bentancur',pos:'DM'},{n:8,name:'Gallagher',pos:'CM'},
+    {n:15,name:'Bergvall',pos:'CM'},{n:7,name:'X. Simons',pos:'AM'},{n:10,name:'Maddison',pos:'AM'},
+    {n:20,name:'Kudus',pos:'RW'},{n:21,name:'Kulusevski',pos:'RW'},{n:28,name:'Odobert',pos:'LW'},
+    {n:19,name:'Solanke',pos:'ST'},{n:9,name:'Richarlison',pos:'ST'},{n:11,name:'Tel',pos:'ST'},
+    {n:14,name:'Gray',pos:'CM'},{n:18,name:'Fernandes',pos:'CM'},{n:25,name:'Takai',pos:'CB'},
+    {n:29,name:'Sarr',pos:'CM'},{n:33,name:'Davies',pos:'LB'},{n:38,name:'Souza',pos:'LB'},
+    {n:40,name:'Austin',pos:'GK'},{n:44,name:'Scarlett',pos:'ST'}]},
   'Sunderland':{kit:{body:'#EB0A1E',sleeve:'#000000',stripeColor:'#000000',stripeType:'vertical',collar:'round'},players:[
-    {n:1,name:'Patterson',pos:'GK'},{n:22,name:'Roefs',pos:'GK'},{n:3,name:'Cirkin',pos:'LB'},
-    {n:4,name:'Neil',pos:'CM'},{n:5,name:'Ballard',pos:'CB'},{n:6,name:'Geertruida',pos:'RB'},
-    {n:7,name:'Talbi',pos:'RW'},{n:9,name:'Brobbey',pos:'ST'},{n:11,name:'Rigg',pos:'AM'},
-    {n:12,name:'Mayenda',pos:'ST'},{n:14,name:'Mundle',pos:'LW'},{n:15,name:'Alderete',pos:'CB'},
-    {n:17,name:'Reinildo',pos:'LB'},{n:18,name:'Isidor',pos:'ST'},{n:19,name:'Diarra',pos:'CM'},
-    {n:20,name:'Mukiele',pos:'RB'},{n:24,name:'Adingra',pos:'LW'},{n:25,name:'Traoré',pos:'RW'},
-    {n:28,name:'Le Fée',pos:'CM'},{n:34,name:'Xhaka',pos:'DM'}]},
+    {n:22,name:'Roefs',pos:'GK'},{n:21,name:'Moore',pos:'GK'},{n:5,name:'Ballard',pos:'CB'},
+    {n:15,name:'Alderete',pos:'CB'},{n:23,name:'Seelt',pos:'CB'},{n:20,name:'Mukiele',pos:'CB'},
+    {n:32,name:'Hume',pos:'RB'},{n:12,name:'Meunier',pos:'RB'},{n:17,name:'Reinildo',pos:'LB'},
+    {n:42,name:'Alese',pos:'LB'},{n:34,name:'Xhaka',pos:'DM'},{n:27,name:'Sadiki',pos:'DM'},
+    {n:19,name:'Diarra',pos:'CM'},{n:8,name:'Browne',pos:'CM'},{n:11,name:'Rigg',pos:'AM'},
+    {n:28,name:'Le Fée',pos:'AM'},{n:7,name:'Talbi',pos:'RW'},{n:24,name:'Adingra',pos:'LW'},
+    {n:9,name:'Brobbey',pos:'ST'},{n:18,name:'Isidor',pos:'ST'},{n:10,name:'Angulo',pos:'RW'},
+    {n:13,name:"O'Nien",pos:'CM'},{n:14,name:'Mundle',pos:'LW'},{n:31,name:'Ellborg',pos:'GK'},
+    {n:37,name:'Bi',pos:'RW'},{n:46,name:'Ba',pos:'AM'}]},
 };
-
 // ── Formations ───────────────────────────────────────────────
 const W=420,H=645,px=x=>x/W*100,py=y=>y/H*100;
 const FORMATIONS={
@@ -608,15 +667,174 @@ const FORMATIONS={
   '3-4-3':[{id:0,role:'GK',x:px(210),y:py(590)},{id:1,role:'CB',x:px(300),y:py(478)},{id:2,role:'CB',x:px(210),y:py(462)},{id:3,role:'CB',x:px(120),y:py(478)},{id:4,role:'RM',x:px(370),y:py(338)},{id:5,role:'CM',x:px(268),y:py(314)},{id:6,role:'CM',x:px(152),y:py(314)},{id:7,role:'LM',x:px(50),y:py(338)},{id:8,role:'RW',x:px(358),y:py(178)},{id:9,role:'ST',x:px(210),y:py(158)},{id:10,role:'LW',x:px(62),y:py(178)}],
 };
 
+// ── Roles (Football Manager role model) ───────────────────────
+const ROLES={
+  GK:[
+    {id:'GK', name:'Goalkeeper'},
+    {id:'SK', name:'Sweeper Keeper'}],
+  CB:[
+    {id:'CD', name:'Central Defender'},
+    {id:'BPD',name:'Ball-Playing Defender'},
+    {id:'NCB',name:'No-Nonsense Centre-Back'},
+    {id:'WCB',name:'Wide Centre-Back'},
+    {id:'L',  name:'Libero'}],
+  FB:[
+    {id:'FB', name:'Full-Back'},
+    {id:'WB', name:'Wing-Back'},
+    {id:'CWB',name:'Complete Wing-Back'},
+    {id:'IWB',name:'Inverted Wing-Back'},
+    {id:'IFB',name:'Inverted Full-Back'},
+    {id:'NFB',name:'No-Nonsense Full-Back'}],
+  WBK:[
+    {id:'WB', name:'Wing-Back'},
+    {id:'CWB',name:'Complete Wing-Back'},
+    {id:'IWB',name:'Inverted Wing-Back'},
+    {id:'FB', name:'Full-Back'},
+    {id:'DW', name:'Defensive Winger'}],
+  DM:[
+    {id:'DM', name:'Defensive Midfielder'},
+    {id:'A',  name:'Anchor'},
+    {id:'HB', name:'Half-Back'},
+    {id:'BWM',name:'Ball-Winning Midfielder'},
+    {id:'DLP',name:'Deep-Lying Playmaker'},
+    {id:'RGA',name:'Regista'},
+    {id:'RPM',name:'Roaming Playmaker'},
+    {id:'SV', name:'Segundo Volante'}],
+  CM:[
+    {id:'CM', name:'Central Midfielder'},
+    {id:'BBM',name:'Box-to-Box Midfielder'},
+    {id:'BWM',name:'Ball-Winning Midfielder'},
+    {id:'DLP',name:'Deep-Lying Playmaker'},
+    {id:'AP', name:'Advanced Playmaker'},
+    {id:'MEZ',name:'Mezzala'},
+    {id:'CAR',name:'Carrilero'},
+    {id:'RPM',name:'Roaming Playmaker'}],
+  WM:[
+    {id:'WM', name:'Wide Midfielder'},
+    {id:'W',  name:'Winger'},
+    {id:'IW', name:'Inverted Winger'},
+    {id:'WP', name:'Wide Playmaker'},
+    {id:'DW', name:'Defensive Winger'}],
+  AM:[
+    {id:'AM', name:'Attacking Midfielder'},
+    {id:'AP', name:'Advanced Playmaker'},
+    {id:'SS', name:'Shadow Striker'},
+    {id:'TQ', name:'Trequartista'},
+    {id:'ENG',name:'Enganche'}],
+  WNG:[
+    {id:'W',  name:'Winger'},
+    {id:'IF', name:'Inside Forward'},
+    {id:'IW', name:'Inverted Winger'},
+    {id:'WP', name:'Wide Playmaker'},
+    {id:'RMD',name:'Raumdeuter'},
+    {id:'WTF',name:'Wide Target Forward'},
+    {id:'TQ', name:'Trequartista'},
+    {id:'DW', name:'Defensive Winger'}],
+  ST:[
+    {id:'AF', name:'Advanced Forward'},
+    {id:'PO', name:'Poacher'},
+    {id:'CF', name:'Complete Forward'},
+    {id:'DLF',name:'Deep-Lying Forward'},
+    {id:'TF', name:'Target Forward'},
+    {id:'PF', name:'Pressing Forward'},
+    {id:'F9', name:'False Nine'},
+    {id:'TQ', name:'Trequartista'}],
+};
+// Which role list each formation slot draws from
+const SLOT_ROLESET={GK:'GK',CB:'CB',RB:'FB',LB:'FB',RWB:'WBK',LWB:'WBK',DM:'DM',CM:'CM',RM:'WM',LM:'WM',AM:'AM',RW:'WNG',LW:'WNG',ST:'ST'};
+const DEFAULT_ROLE={GK:'GK',CB:'CD',RB:'FB',LB:'FB',RWB:'WB',LWB:'WB',
+  DM:'DM',CM:'CM',RM:'W',LM:'W',AM:'AM',RW:'W',LW:'W',ST:'AF'};
+
+function roleSetFor(slotRole){return ROLES[SLOT_ROLESET[slotRole]]||ROLES.CM;}
+function slotOf(posId){return FORMATIONS[S.formation].find(p=>p.id===posId);}
+// Reads the slot's role, self-healing if a stored role is invalid for the
+// current formation (e.g. a CM slot became a DM slot on formation change).
+function getRole(posId){
+  const slot=slotOf(posId); if(!slot)return'CM';
+  const cur=S.roles[posId];
+  if(cur&&roleSetFor(slot.role).some(r=>r.id===cur))return cur;
+  return S.roles[posId]=DEFAULT_ROLE[slot.role]||'CM';
+}
+function roleMeta(posId){
+  const set=roleSetFor(slotOf(posId).role), id=getRole(posId);
+  return set.find(r=>r.id===id)||set[0];
+}
+function roleLabel(posId){return getRole(posId);}
+function chooseRole(roleId){
+  if(!roleSetFor(slotOf(popupPosId).role).some(r=>r.id===roleId))return;
+  S.roles[popupPosId]=roleId;
+  renderTokens();
+}
+
 // ── State ─────────────────────────────────────────────────────
-const S={team:'Arsenal',formation:'4-3-3',lineup:[],bench:[],overrides:{}};
+const S={team:'Arsenal',formation:'4-3-3',lineup:[],bench:[],overrides:{},roles:{}};
+
+// Ranked position fits: a slot takes its 1st-choice position before any
+// slot falls back to a 2nd choice, so the best XI lands in natural roles.
+const POS_FIT={
+  GK :['GK'],
+  RB :['RB','CB','LB','DM'],
+  LB :['LB','CB','RB','DM'],
+  CB :['CB','RB','LB','DM'],
+  RWB:['RB','RW','LB','RM','CM'],
+  LWB:['LB','LW','RB','LM','CM'],
+  DM :['DM','CM','CB','AM'],
+  CM :['CM','DM','AM'],
+  RM :['RW','CM','AM','RB','LW'],
+  LM :['LW','CM','AM','LB','RW'],
+  AM :['AM','CM','ST','LW','RW','DM'],
+  RW :['RW','LW','AM','ST','CM'],
+  LW :['LW','RW','AM','ST','CM'],
+  ST :['ST','AM','LW','RW','CM'],
+};
+
+// The three 'AM' slots of a 4-2-3-1 are really left/centre/right, so the wide
+// ones should pull wingers rather than another central midfielder.
+function fitFor(slot){
+  if(slot.role==='AM'){
+    if(slot.x>60)return['RW','AM','LW','CM','ST'];
+    if(slot.x<40)return['LW','AM','RW','CM','ST'];
+    return['AM','CM','ST','DM'];
+  }
+  return POS_FIT[slot.role]||[];
+}
+
+function pickXI(squad,slots){
+  // Each squad is listed as a depth chart: first-choice players first, then
+  // fringe/academy depth. A slot scores every candidate on position fit and
+  // depth, so a senior player slightly out of position (Caicedo, a DM, at CM)
+  // still beats an academy player who is a nominal exact match.
+  const DEPTH_W=8, cand=[];
+  slots.forEach((slot,si)=>{
+    const fit=fitFor(slot);
+    squad.forEach((pl,pi)=>{
+      const r=fit.indexOf(pl.pos);
+      if(r>-1)cand.push([r*DEPTH_W+pi,si,pi]);
+    });
+  });
+  cand.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+  const out=slots.map(()=>null), taken=new Set();
+  for(const [,si,pi] of cand){
+    if(out[si]!==null||taken.has(pi))continue;
+    out[si]=pi; taken.add(pi);
+  }
+  // Last resort: any spare outfielder (never a keeper in an outfield slot).
+  slots.forEach((slot,si)=>{
+    if(out[si]!==null)return;
+    const j=squad.findIndex((pl,k)=>!taken.has(k)&&pl.pos!=='GK');
+    if(j>-1){out[si]=j;taken.add(j);}
+  });
+  return out;
+}
 
 function initLineup(){
   const squad=TEAMS[S.team].players, pos=FORMATIONS[S.formation];
-  S.lineup=pos.map((p,i)=>({posId:p.id,playerIdx:i<squad.length?i:null}));
+  const xi=pickXI(squad,pos);
+  S.lineup=pos.map((p,i)=>({posId:p.id,playerIdx:xi[i]}));
   const used=new Set(S.lineup.map(l=>l.playerIdx).filter(x=>x!==null));
   S.bench=squad.map((_,i)=>i).filter(i=>!used.has(i));
   S.overrides={};
+  S.roles={};
 }
 
 // ── Mobile tab ────────────────────────────────────────────────
@@ -736,8 +954,17 @@ function openPopup(e,posId){
   const rows=S.bench.length===0
     ?`<div class="popup-empty">No bench players available</div>`
     :S.bench.map(idx=>{const p=squad[idx];return `<div class="popup-row" onclick="doSub(${idx})"><span class="popup-row-num">${p.n}</span><span class="popup-row-name">${p.name}</span><span class="popup-row-pos">${p.pos}</span></div>`;}).join('');
+  const cur=getRole(posId);
+  const opts=roleSetFor(pos.role).map(r=>
+    `<option value="${r.id}"${r.id===cur?' selected':''}>${r.name}</option>`).join('');
   const popup=document.getElementById('popup');
-  popup.innerHTML=`<div class="popup-hdr"><div class="popup-player-name">${player?player.name:pos?.role||'—'}</div><div class="popup-pos-badge">${pos?.role||''}</div></div><div class="popup-sub-label">Substitute with</div><div class="popup-list">${rows}</div>`;
+  popup.innerHTML=`<div class="popup-hdr"><div class="popup-player-name">${player?player.name:pos?.role||'—'}</div><div class="popup-pos-badge">${pos?.role||''}</div></div>`
+    +`<div class="popup-body">`
+    +`<div class="popup-sub-label">ROLE</div>`
+    +`<div class="role-select-wrap"><select class="role-select" onchange="chooseRole(this.value)">${opts}</select></div>`
+    +`<div class="popup-divider"></div>`
+    +`<div class="popup-sub-label">SUBSTITUTE WITH</div><div class="popup-list">${rows}</div>`
+    +`</div>`;
   popup.style.display='flex';
   document.getElementById('overlay').style.display='block';
 }
@@ -756,8 +983,18 @@ function closePopup(){document.getElementById('popup').style.display='none';docu
 // ── Formation switch ──────────────────────────────────────────
 function setFormation(f){
   if(S.formation===f)return;
-  const old=[...S.lineup];S.formation=f;
-  S.lineup=FORMATIONS[f].map((p,i)=>({posId:p.id,playerIdx:old[i]?.playerIdx??null}));
+  const squad=TEAMS[S.team].players;
+  const xi=S.lineup.map(l=>l.playerIdx).filter(i=>i!==null);
+  S.formation=f;
+  // Re-seat by position fit rather than by slot index, so nobody lands in a
+  // role they don't play. The current eleven is listed first, so it wins any
+  // tie at equal fit; a slot the eleven can't cover (e.g. a third centre-back
+  // in 3-5-2) still pulls the proper specialist off the bench.
+  const order=[...xi,...squad.map((_,i)=>i).filter(i=>!xi.includes(i))];
+  const seated=pickXI(order.map(i=>squad[i]),FORMATIONS[f]);
+  S.lineup=FORMATIONS[f].map((p,i)=>({posId:p.id,playerIdx:seated[i]!=null?order[seated[i]]:null}));
+  const used=new Set(S.lineup.map(l=>l.playerIdx).filter(i=>i!==null));
+  S.bench=squad.map((_,i)=>i).filter(i=>!used.has(i));
   S.overrides={};
   document.querySelectorAll('.f-btn').forEach(b=>b.classList.toggle('active',b.dataset.f===f));
   document.querySelectorAll('.p-card').forEach(el=>{el.classList.add('animating');setTimeout(()=>el.classList.remove('animating'),400);});
@@ -790,7 +1027,7 @@ function renderTokens(){
       canvas.appendChild(el);
     }
     const sz=38;
-    el.innerHTML=`<div class="jersey-shell">${jerseyIcon(uk,sz,player?player.n:null)}</div><div class="p-label"><span class="p-label-name">${player?player.name:pd.role}</span><span class="p-label-pos">${pd.role}</span></div>`;
+    el.innerHTML=`<div class="jersey-shell">${jerseyIcon(uk,sz,player?player.n:null)}</div><div class="p-label"><span class="p-label-name">${player?player.name:pd.role}</span><span class="p-label-pos">${roleLabel(li.posId)}</span></div>`;
     el.style.left=x+'%';el.style.top=y+'%';
   });
 }
@@ -850,7 +1087,7 @@ async function exportSnapshot(){
     ctx.fillStyle='rgba(0,0,0,.78)';_rr(ctx,cx-tw/2-7,cy+JSZ/2-10,tw+14,22,5);ctx.fill();
     ctx.fillStyle='#fff';ctx.fillText(name,cx,cy+JSZ/2+6);
     ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='600 13px Inter,system-ui,sans-serif';
-    ctx.fillText(pd.role,cx,cy+JSZ/2+22);
+    ctx.fillText(roleLabel(li.posId),cx,cy+JSZ/2+22);
   }
   // Header bar
   ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,CW,52);
@@ -877,7 +1114,7 @@ function _si(s){return new Promise(r=>{const b=new Blob([s],{type:'image/svg+xml
 function _l(ctx,x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
 function _rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
 
-function resetAll(){S.overrides={};initLineup();render();}
+function resetAll(){S.overrides={};S.roles={};initLineup();render();}
 
 // ── Init ──────────────────────────────────────────────────────
 function init(){
