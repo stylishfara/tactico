@@ -5,438 +5,279 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <title>Tactico</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── Lume tokens — Tokens collection, Light mode ────────────── */
 :root{
-  /* shadcn-new-patterns light surface tokens */
-  --bg:#f5f5f5;
-  --s1:#ffffff;
-  --s2:#f5f5f5;
-  --s3:#e5e5e5;
-  --b1:rgba(0,0,0,.07);
-  --b2:rgba(0,0,0,.11);
-  --txt:#262626;
-  --muted:#737373;
-  --dim:#a3a3a3;
-  /* Primary accent — emerald */
-  --grn:#10b981;
-  --grn-l:#059669;
-  --grn-d:rgba(16,185,129,.1);
-  --font:'Inter',system-ui,sans-serif;
-  --hdr-h:48px;--tab-h:68px;
+  --background:#ffffff;           /* Base/Background */
+  --foreground:#262626;           /* Base/Foreground */
+  --secondary-foreground:#171717; /* Base/Secondary-foreground */
+  --muted:#f5f5f5;                /* Base/Muted */
+  --muted-foreground:#737373;     /* Base/Muted-foreground */
+  --input:#e5e5e5;                /* Base/Input */
+  --border:#f5f5f5;               /* Base/Border */
+  --ring:#d4d4d4;                 /* Base/Ring */
+  --btn-outline-bg:#ffffff;       /* Custom/Btn outline background */
+  /* raw hexes taken from the frame — no Lume variable is bound to these */
+  --divider:#e6e6e6;              /* Line 628 stroke */
+  --pitch:#18814f;                /* pitch fill */
+  --pitch-pill:#2f6a4e;           /* on-pitch position pill */
+  /* Numbers / Radius */
+  --n0:0px;--n2:2px;--n8:8px;--n10:10px;--n12:12px;--n16:16px;
+  --r8:8px;--r10:10px;--r12:12px;--r16:16px;
+  --font:'Geist',system-ui,-apple-system,sans-serif;
+  --app-w:402px;--pad:16px;
 }
-html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);background:var(--bg);color:var(--txt);touch-action:manipulation}
 
-/* ── HEADER ── */
-header{display:flex;align-items:center;justify-content:space-between;padding:0 12px;height:var(--hdr-h);background:var(--s1);border-bottom:1px solid var(--b1);flex-shrink:0;z-index:30;position:relative}
-.logo{font-size:16px;font-weight:800;letter-spacing:-.03em;white-space:nowrap}.logo em{font-style:normal;color:var(--grn)}
-.hc{display:flex;align-items:center;gap:8px}
-select{
-  background:var(--s2);color:var(--txt);
-  border:1px solid var(--b2);border-radius:8px;
-  padding:0 28px 0 10px;height:36px;
-  font-size:12px;font-weight:500;font-family:var(--font);
-  cursor:pointer;appearance:none;min-width:0;flex:1;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 8px center;
+html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);
+  background:var(--background);color:var(--foreground);touch-action:manipulation;
+  -webkit-font-smoothing:antialiased}
+
+/* ── App shell — capped at the 402px design frame ───────────── */
+.frame{max-width:var(--app-w);margin:0 auto;height:100%;height:100dvh;
+  display:flex;flex-direction:column;overflow:hidden;
+  padding:env(safe-area-inset-top,0px) var(--pad) 0}
+
+/* ── Buttons — Lume outline button ──────────────────────────── */
+.btn-outline{
+  height:36px;display:inline-flex;align-items:center;justify-content:center;
+  gap:var(--n2);padding:0 var(--n12);
+  background:var(--btn-outline-bg);border:1px solid var(--input);
+  border-radius:var(--r10);
+  font-family:var(--font);font-size:14px;line-height:21px;font-weight:500;
+  color:var(--foreground);cursor:pointer;
+  transition:background .15s,border-color .15s;white-space:nowrap
 }
-select:focus{outline:none;border-color:var(--grn)}
-.btn{border:none;border-radius:8px;padding:0 12px;height:36px;font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
-.btn-ghost{background:var(--s2);color:var(--muted);border:1px solid var(--b2)}.btn-ghost:hover{color:var(--txt);background:var(--s3)}
-.btn-primary{background:var(--grn);color:#fff}.btn-primary:hover{background:var(--grn-l)}
-.btn-icon{padding:0;width:36px;justify-content:center}
-.btn-text{display:none}
+.btn-outline:hover{background:var(--muted)}
+.btn-outline:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.btn-icon{width:36px;padding:0;border-radius:var(--r8)}
+.chev{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chev svg{display:block;width:11.25px;height:6.25px}
 
-/* ── SHELL ── */
-.shell{display:flex;flex-direction:column;height:calc(100vh - var(--hdr-h));height:calc(100dvh - var(--hdr-h));position:relative}
-.app{flex:1;position:relative;overflow:hidden}
+/* ── Control row: formation (left) + team button-group (right) ─ */
+.ctrl-row{display:flex;align-items:center;justify-content:space-between;
+  gap:8px;flex-shrink:0;margin-top:32px;position:relative;z-index:40}
+.ctrl{position:relative;display:inline-flex;min-width:0}
+.ctrl{position:relative}
+.ctrl>select,.bg-l>select{position:absolute;inset:0;width:100%;height:100%;opacity:0;
+  border:0;cursor:pointer;font-family:var(--font);font-size:16px}
+.ctrl:focus-within>.btn-outline,.ctrl:focus-within .btn-group{
+  outline:2px solid var(--ring);outline-offset:2px;border-radius:var(--r10)}
+.ctrl-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 
-/* ── OVERLAY PANELS (Formation / Squad) ── */
-.col-formation,.col-squad{
-  display:none;position:absolute;inset:0;width:100%;z-index:20;
-  flex-direction:column;background:var(--s1);overflow:hidden;
-  padding:16px 16px 12px;gap:12px;touch-action:pan-y
-}
-.col-formation.mob-active,.col-squad.mob-active{display:flex}
-.col-squad{padding:0;gap:0}
-.col-squad-hdr{padding:16px 16px 10px;border-bottom:1px solid var(--b1);flex-shrink:0}
-.col-label{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+/* Button-group — shares one 1px divider between the halves */
+.btn-group{display:flex;align-items:center;min-width:0}
+.btn-group .bg-l{position:relative;border-right:0;border-radius:var(--r8) 0 0 var(--r8);gap:var(--n8);min-width:0}
+.btn-group .bg-r{border-radius:0 var(--r8) var(--r8) 0;width:44px;padding:0}
 
-/* Mini pitch */
-.mini-pitch-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--b2);flex-shrink:0;width:180px;align-self:center}
+.menu{position:absolute;top:calc(100% + 6px);right:0;min-width:184px;
+  background:var(--background);border:1px solid var(--input);border-radius:var(--r8);
+  box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);
+  padding:4px;z-index:70}
+.menu[hidden]{display:none}
+.menu-item{display:flex;align-items:center;gap:var(--n8);width:100%;
+  padding:8px 10px;border:0;border-radius:6px;background:none;cursor:pointer;
+  font-family:var(--font);font-size:14px;line-height:21px;font-weight:500;
+  color:var(--foreground);text-align:left}
+.menu-item:hover{background:var(--muted)}
+.menu-item:focus-visible{outline:2px solid var(--ring);outline-offset:-2px}
+.menu-item svg{flex-shrink:0;color:var(--muted-foreground)}
+.menu-item[disabled]{opacity:.5;cursor:default}
 
-/* Formation buttons */
-.f-grid{display:grid;grid-template-columns:1fr;gap:6px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0}
-.f-btn{
-  background:var(--s2);color:var(--txt);
-  border:1px solid var(--b1);border-radius:8px;
-  padding:0 12px;height:40px;
-  font-size:14px;font-weight:500;font-family:var(--font);
-  cursor:pointer;transition:background .15s,border-color .15s,color .15s;
-  text-align:left;display:flex;align-items:center;
-}
-.f-btn:hover{background:var(--s3);border-color:var(--b2)}
-.f-btn.active{background:var(--grn-d);color:var(--grn);border-color:var(--grn)}
+/* ── Pitch ──────────────────────────────────────────────────── */
+.pitch-wrap{flex:0 1 auto;min-height:0;width:100%;aspect-ratio:370/460;margin-top:16px}
+.pitch{position:relative;width:100%;height:100%;
+  background-color:var(--pitch);
+  background-image:repeating-linear-gradient(180deg,
+    rgba(255,255,255,.035) 0 12.5%,
+    rgba(0,0,0,.03) 12.5% 25%);
+  overflow:hidden;touch-action:none}
+.pitch-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 
-/* Squad list */
-.sq-list{flex:1;overflow-y:auto;padding:8px;-webkit-overflow-scrolling:touch}
-.sq-list::-webkit-scrollbar{width:3px}.sq-list::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
-.sq-row{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;cursor:grab;transition:background .12s;user-select:none}
-.sq-row:hover{background:var(--s2)}.sq-row.used{opacity:.28;pointer-events:none}
-.sq-num{width:22px;font-size:11px;font-weight:500;color:var(--muted);text-align:right;flex-shrink:0}
-.sq-name{font-size:14px;font-weight:400;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
-.sq-pos{font-size:12px;font-weight:500;color:var(--muted);flex-shrink:0}
-
-/* ── PITCH ── */
-.col-main{position:absolute;inset:0;display:flex;flex-direction:column}
-.pitch-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden;min-height:0}
-.pitch-outer{position:relative;height:100%;aspect-ratio:.65;max-height:calc(100dvh - var(--hdr-h) - 130px - var(--tab-h))}
-.pitch-svg{position:absolute;inset:0;width:100%;height:100%;border-radius:12px;overflow:hidden}
-.pitch-canvas{position:absolute;inset:0;width:100%;height:100%}
-
-/* ── BENCH ── */
-.bench-bar{background:var(--s1);padding:8px 12px;flex-shrink:0}
-.bench-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.bench-label{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted)}
-.bench-count{font-size:11px;font-weight:400;color:var(--dim)}
-.bench-row{display:flex;gap:8px;min-height:90px;padding:4px 2px;overflow-x:scroll;overflow-y:visible;align-items:flex-start;-webkit-overflow-scrolling:touch;touch-action:pan-x;flex-wrap:nowrap}
-.bench-row::-webkit-scrollbar{display:none}
-.bench-row.over{background:var(--grn-d);border-radius:12px}
-
-/* ── PLAYER TOKENS ── */
-.p-card{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;z-index:10;user-select:none;-webkit-user-select:none;touch-action:none}
-.p-card.dragging{opacity:.3;z-index:99}
+/* ── Player token — dark card + position pill ───────────────── */
+.p-card{position:absolute;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;z-index:10;user-select:none;-webkit-user-select:none;touch-action:none}
+.p-card.dragging{opacity:.35;z-index:99}
 .p-card.animating{transition:left .3s cubic-bezier(.4,0,.2,1),top .3s cubic-bezier(.4,0,.2,1);pointer-events:none}
-.jersey-shell{transition:transform .15s}
-.p-card:hover .jersey-shell,.p-card:active .jersey-shell{transform:scale(1.08)}
-.jersey-shell svg{display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
-.p-label{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);border-radius:4px;padding:2px 5px;text-align:center;max-width:64px}
-.p-label-name{display:block;font-size:9px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62px}
-.p-label-pos{display:block;font-size:8px;color:#34d399;font-weight:500;line-height:1.3}
-
-/* ── BENCH CARDS — FPL style ── */
-.b-card{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  cursor:grab;flex-shrink:0;touch-action:pan-x;
-  background:var(--s1);border:1px solid var(--b1);
-  border-radius:12px;padding:6px 8px 8px;
-  min-width:72px;max-width:72px;
+.pt-card{
+  background:var(--secondary-foreground);border-radius:var(--r12);
+  padding:var(--n2) var(--n10) var(--n8);
+  margin-bottom:-4px;text-align:center;transition:transform .15s
 }
+.p-card:hover .pt-card,.p-card:active .pt-card{transform:scale(1.04)}
+.pt-num{display:block;font-size:12px;line-height:14px;font-weight:500;color:rgba(255,255,255,.4)}
+.pt-name{display:block;font-size:12px;line-height:18px;font-weight:600;color:#fff;white-space:nowrap}
+.pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:20px;min-height:18.333px;max-height:20px;
+  padding:1.667px 6.667px;border-radius:13.333px;
+  font-size:10px;line-height:15px;font-weight:600;
+  color:var(--background);white-space:nowrap
+}
+.pt-pill{background:var(--pitch-pill);position:relative;z-index:1}
+
+/* ── Bench ──────────────────────────────────────────────────── */
+.bench{background:var(--muted);border-radius:var(--r16);
+  padding:var(--n16) 0;display:flex;flex-direction:column;gap:var(--n16);
+  overflow:hidden;flex-shrink:0;margin:16px 0}
+.bench-hdr{display:flex;align-items:center;justify-content:space-between;padding:0 var(--n16)}
+.bench-title{font-size:16px;line-height:24px;font-weight:500;color:var(--foreground)}
+.bench-count{font-size:14px;line-height:21px;font-weight:500;color:var(--muted-foreground)}
+.bench-div{height:1px;background:var(--divider);width:100%;flex-shrink:0}
+.bench-row{display:flex;align-items:center;gap:10px;padding:0 var(--n16);
+  overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x}
+.bench-row::-webkit-scrollbar{display:none}
+.bench-row.over{outline:2px dashed var(--ring);outline-offset:-4px;border-radius:var(--r12)}
+.b-card{display:flex;flex-direction:column;align-items:center;gap:6px;
+  flex-shrink:0;cursor:grab}
 .b-card:active{opacity:.7}
-.b-card .jersey-shell svg{filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
-.b-pos-badge{
-  font-size:10px;font-weight:700;letter-spacing:.04em;
-  padding:2px 7px;border-radius:9999px;text-align:center;align-self:center;
-  line-height:1.4;
-}
-.b-pos-GK{background:#fef3c7;color:#d97706}
-.b-pos-CB,.b-pos-LB,.b-pos-RB,.b-pos-DEF{background:#dbeafe;color:#2563eb}
-.b-pos-CM,.b-pos-DM,.b-pos-AM,.b-pos-MID{background:#dcfce7;color:#16a34a}
-.b-pos-ST,.b-pos-LW,.b-pos-RW,.b-pos-FWD{background:#fee2e2;color:#dc2626}
-.b-name{display:block;font-size:10px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60px;text-align:center}
-.b-num{display:block;font-size:10px;font-weight:400;color:var(--muted);text-align:center}
+.b-pill{background:var(--muted-foreground)}
+.b-body{background:var(--background);border-radius:var(--r12);
+  padding:var(--n2) var(--n10) var(--n8);text-align:center;color:var(--muted-foreground)}
+.b-num{display:block;font-size:12px;line-height:14px;font-weight:500}
+.b-name{display:block;font-size:12px;line-height:18px;font-weight:600;white-space:nowrap}
 
-/* ── SUBSTITUTION SHEET ── */
+/* ── Bottom sheet ───────────────────────────────────────────── */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.4)}
 .popup{
-  position:fixed;left:0!important;right:0!important;
-  bottom:var(--tab-h)!important;top:auto!important;
-  width:100%!important;min-width:unset;max-height:74vh;
-  background:var(--s1);border:1px solid var(--b2);
-  border-radius:16px 16px 0 0;
-  z-index:60;box-shadow:0 -4px 32px rgba(0,0,0,.6);
+  position:fixed;left:0;right:0;bottom:0;
+  width:100%;max-height:74vh;
+  background:var(--background);border:1px solid var(--border);
+  border-radius:var(--r16) var(--r16) 0 0;
+  z-index:60;box-shadow:0 -10px 30px -6px rgba(0,0,0,.12);
   overflow:hidden;display:flex;flex-direction:column;
   animation:slideup .2s ease-out
 }
 @keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
-/* drag handle pill */
-.popup::before{content:'';display:block;width:36px;height:4px;background:var(--dim);border-radius:9999px;margin:10px auto 0;flex-shrink:0;opacity:.3}
-.popup-hdr{padding:8px 16px 10px;border-bottom:1px solid var(--b1);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
-.popup-player-name{font-size:16px;font-weight:600;color:var(--txt)}
-.popup-pos-badge{font-size:12px;font-weight:500;color:var(--grn);background:var(--grn-d);padding:3px 8px;border-radius:32px}
-.popup-sub-label{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted);padding:10px 16px 4px;flex-shrink:0}
-.popup-list{padding:2px 8px 8px}
-.popup-list::-webkit-scrollbar{width:3px}.popup-list::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
-.popup-row{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;transition:background .1s}
-.popup-row:hover,.popup-row:active{background:var(--s2)}
-.popup-row-num{font-size:12px;font-weight:500;color:var(--muted);width:24px;text-align:right;flex-shrink:0}
-.popup-row-name{font-size:14px;font-weight:400;flex:1;color:var(--txt)}
-.popup-row-pos{font-size:12px;font-weight:500;color:var(--muted)}
-.popup-empty{padding:24px 16px;font-size:14px;color:var(--dim);text-align:center}
+.popup::before{content:'';display:block;width:36px;height:4px;background:var(--input);
+  border-radius:9999px;margin:10px auto 0;flex-shrink:0}
+.popup-hdr{padding:10px var(--n16) 12px;border-bottom:1px solid var(--border);
+  flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.popup-player-name{font-size:16px;line-height:24px;font-weight:600;color:var(--foreground)}
+.popup-pos-badge{font-size:12px;line-height:18px;font-weight:600;color:var(--muted-foreground);
+  background:var(--muted);padding:2px 8px;border-radius:9999px}
 .popup-body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
-.popup-body::-webkit-scrollbar{width:3px}.popup-body::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
-.role-select-wrap{padding:2px 16px 12px}
-.role-select{width:100%;flex:none;height:40px;font-size:13px;font-weight:500;background-color:var(--s1)}
-.popup-divider{height:1px;background:var(--b1);margin:2px 16px 0}
-.overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}
-
-/* ── TAB BAR ── */
-.tab-bar{
-  display:flex;align-items:center;justify-content:center;
-  height:var(--tab-h);background:var(--s1);
-  position:relative;z-index:30;flex-shrink:0;
-  padding:0 0 8px;border-top:1px solid var(--b1);
+.popup-body::-webkit-scrollbar{width:3px}
+.popup-body::-webkit-scrollbar-thumb{background:var(--input);border-radius:3px}
+.popup-sub-label{font-size:12px;line-height:18px;font-weight:500;letter-spacing:.04em;
+  color:var(--muted-foreground);padding:12px var(--n16) 6px}
+.role-select-wrap{padding:0 var(--n16) 12px}
+.role-select{
+  width:100%;height:40px;padding:0 34px 0 12px;
+  background:var(--btn-outline-bg);color:var(--foreground);
+  border:1px solid var(--input);border-radius:var(--r8);
+  font-family:var(--font);font-size:14px;line-height:21px;font-weight:500;
+  cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11.2499 6.24991' fill='none'%3E%3Cpath d='M10.1831 0.183058C10.4271 -0.0610194 10.8228 -0.0610194 11.0668 0.183058C11.3109 0.427136 11.3109 0.82277 11.0668 1.06685L6.06685 6.06685C5.82277 6.31093 5.42714 6.31093 5.18306 6.06685L0.183058 1.06685C-0.0610194 0.82277 -0.0610194 0.427136 0.183058 0.183058C0.427136 -0.0610194 0.82277 -0.0610194 1.06685 0.183058L5.62495 4.74116L10.1831 0.183058Z' fill='%23262626'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center
 }
-.tab-bar-inner{
-  display:flex;align-items:center;gap:8px;
-  background:var(--s1);border:1px solid var(--b2);
-  border-radius:9999px;padding:6px;
-  box-shadow:0 4px 24px rgba(0,0,0,.12)
-}
-.tab-btn{
-  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
-  border:none;background:none;color:var(--dim);
-  cursor:pointer;transition:color .15s,background .15s;
-  border-radius:9999px;flex-shrink:0;padding:10px;
-  box-sizing:border-box
-}
-.tab-btn:hover{background:var(--s2);color:var(--muted)}
-.tab-btn.active{background:var(--grn);color:#fff}
-.tab-btn svg{display:block;transition:opacity .15s}
+.role-select:focus{outline:none;border-color:var(--ring)}
+.popup-divider{height:1px;background:var(--border);margin:2px var(--n16) 0}
+.popup-list{padding:2px 8px 8px}
+.popup-row{display:flex;align-items:center;gap:10px;padding:10px 8px;
+  border-radius:var(--r8);cursor:pointer;transition:background .1s}
+.popup-row:hover,.popup-row:active{background:var(--muted)}
+.popup-row-num{font-size:12px;line-height:18px;font-weight:500;color:var(--muted-foreground);
+  width:24px;text-align:right;flex-shrink:0}
+.popup-row-name{font-size:14px;line-height:21px;font-weight:500;flex:1;color:var(--foreground)}
+.popup-row-pos{font-size:12px;line-height:18px;font-weight:500;color:var(--muted-foreground)}
+.popup-empty{padding:24px var(--n16);font-size:14px;color:var(--muted-foreground);text-align:center}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">Tac<em>tico</em></div>
-  <div class="hc">
-    <select id="teamSel"></select>
-    <button class="btn btn-ghost btn-icon" onclick="resetAll()" title="Reset">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
-      <span class="btn-text">Reset</span>
-    </button>
-    <button class="btn btn-primary btn-icon" id="exportBtn" onclick="exportSnapshot()" title="Export">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span class="btn-text">Export</span>
-    </button>
-  </div>
-</header>
+<div class="frame">
 
-<div class="shell">
-  <div class="app">
-
-    <!-- Formation column (desktop left / mobile overlay) -->
-    <div class="col-formation" id="colFormation">
-      <div class="col-label">Formation</div>
-      <div class="mini-pitch-wrap" id="miniPitchWrap"></div>
-      <div class="f-grid" id="fGrid"></div>
+  <!-- Control row -->
+  <div class="ctrl-row">
+    <div class="ctrl">
+      <select id="formationSel" aria-label="Formation"></select>
+      <span class="btn-outline" aria-hidden="true">
+        <span class="ctrl-label" id="formationLabel">4-3-3</span>
+        <span class="chev"><svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="11.2499" height="6.24991" viewBox="0 0 11.2499 6.24991" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="Vector (Stroke)" d="M10.1831 0.183058C10.4271 -0.0610194 10.8228 -0.0610194 11.0668 0.183058C11.3109 0.427136 11.3109 0.82277 11.0668 1.06685L6.06685 6.06685C5.82277 6.31093 5.42714 6.31093 5.18306 6.06685L0.183058 1.06685C-0.0610194 0.82277 -0.0610194 0.427136 0.183058 0.183058C0.427136 -0.0610194 0.82277 -0.0610194 1.06685 0.183058L5.62495 4.74116L10.1831 0.183058Z" fill="#262626"/></svg></span>
+      </span>
     </div>
-
-    <!-- Main pitch -->
-    <div class="col-main">
-      <div class="pitch-wrap">
-        <div class="pitch-outer" id="pitchOuter">
-          <svg class="pitch-svg" viewBox="0 0 420 645" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="ps" x="0" y="0" width="420" height="54" patternUnits="userSpaceOnUse">
-                <rect width="420" height="27" fill="#285922"/>
-                <rect y="27" width="420" height="27" fill="#2b5f25"/>
-              </pattern>
-            </defs>
-            <rect width="420" height="645" rx="8" fill="url(#ps)"/>
-            <g stroke="rgba(255,255,255,.48)" stroke-width="1.6" fill="none">
-              <rect x="18" y="18" width="384" height="609" rx="1"/>
-              <line x1="18" y1="322.5" x2="402" y2="322.5"/>
-              <circle cx="210" cy="322.5" r="54"/>
-              <circle cx="210" cy="322.5" r="2.5" fill="rgba(255,255,255,.48)" stroke="none"/>
-              <rect x="88" y="18" width="244" height="87"/>
-              <rect x="143" y="18" width="134" height="28"/>
-              <circle cx="210" cy="82" r="2" fill="rgba(255,255,255,.48)" stroke="none"/>
-              <path d="M153 105 A54 54 0 0 0 267 105"/>
-              <rect x="88" y="540" width="244" height="87"/>
-              <rect x="143" y="599" width="134" height="28"/>
-              <circle cx="210" cy="563" r="2" fill="rgba(255,255,255,.48)" stroke="none"/>
-              <path d="M153 540 A54 54 0 0 1 267 540"/>
-              <rect x="170" y="10" width="80" height="9" stroke-opacity=".35"/>
-              <rect x="170" y="626" width="80" height="9" stroke-opacity=".35"/>
-              <path d="M18 32 A14 14 0 0 0 32 18" stroke-opacity=".35"/>
-              <path d="M388 18 A14 14 0 0 0 402 32" stroke-opacity=".35"/>
-              <path d="M18 613 A14 14 0 0 1 32 627" stroke-opacity=".35"/>
-              <path d="M402 613 A14 14 0 0 0 388 627" stroke-opacity=".35"/>
-            </g>
-          </svg>
-          <div class="pitch-canvas" id="pitchCanvas"
-            ondragover="onPitchDragOver(event)" ondrop="onPitchDrop(event)"></div>
-        </div>
-      </div>
-
-      <div class="bench-bar">
-        <div class="bench-hdr">
-          <span class="bench-label">Bench</span>
-          <span class="bench-count" id="benchCnt"></span>
-        </div>
-        <div class="bench-row" id="benchRow"
-          ondragover="onBenchDragOver(event)" ondragleave="onBenchDragLeave()"
-          ondrop="onBenchDrop(event)"></div>
+    <div class="ctrl" id="teamCtrl">
+      <span class="btn-group">
+        <span class="btn-outline bg-l">
+          <select id="teamSel" aria-label="Team"></select>
+          <span class="ctrl-label" id="teamLabel" aria-hidden="true">Arsenal</span>
+        </span>
+        <button type="button" class="btn-outline bg-r" id="menuBtn"
+          aria-haspopup="menu" aria-expanded="false" aria-label="More actions"
+          onclick="toggleMenu(event)"><span class="chev"><svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="11.2499" height="6.24991" viewBox="0 0 11.2499 6.24991" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="Vector (Stroke)" d="M10.1831 0.183058C10.4271 -0.0610194 10.8228 -0.0610194 11.0668 0.183058C11.3109 0.427136 11.3109 0.82277 11.0668 1.06685L6.06685 6.06685C5.82277 6.31093 5.42714 6.31093 5.18306 6.06685L0.183058 1.06685C-0.0610194 0.82277 -0.0610194 0.427136 0.183058 0.183058C0.427136 -0.0610194 0.82277 -0.0610194 1.06685 0.183058L5.62495 4.74116L10.1831 0.183058Z" fill="#262626"/></svg></span></button>
+      </span>
+      <div class="menu" id="actionMenu" role="menu" hidden>
+        <button type="button" class="menu-item" role="menuitem" onclick="menuAction('reset')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
+          Reset lineup
+        </button>
+        <button type="button" class="menu-item" role="menuitem" id="exportBtn" onclick="menuAction('export')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export as image
+        </button>
       </div>
     </div>
-
-    <!-- Squad column (desktop right / mobile overlay) -->
-    <div class="col-squad" id="colSquad">
-      <div class="col-squad-hdr">
-        <div class="col-label">Squad</div>
-      </div>
-      <div class="sq-list" id="sqList"></div>
-    </div>
-
   </div>
 
-  <!-- Mobile tab bar -->
-  <nav class="tab-bar" id="tabBar">
-   <div class="tab-bar-inner">
-    <button class="tab-btn" id="tab-formation" onclick="setTab('formation')" title="Formation">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-      </svg>
-    </button>
-    <button class="tab-btn active" id="tab-pitch" onclick="setTab('pitch')" title="Pitch">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
-        <line x1="2" y1="12" x2="22" y2="12"/>
-      </svg>
-    </button>
-    <button class="tab-btn" id="tab-squad" onclick="setTab('squad')" title="Squad">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
-        <line x1="8" y1="18" x2="21" y2="18"/>
-        <circle cx="3" cy="6" r="1.5" fill="currentColor" stroke="none"/>
-        <circle cx="3" cy="12" r="1.5" fill="currentColor" stroke="none"/>
-        <circle cx="3" cy="18" r="1.5" fill="currentColor" stroke="none"/>
-      </svg>
-    </button>
-   </div>
-  </nav>
+  <!-- Pitch -->
+  <div class="pitch-wrap">
+    <div class="pitch" id="pitchCanvas"
+      ondragover="onPitchDragOver(event)" ondrop="onPitchDrop(event)"><svg class="pitch-lines"
+      viewBox="0 0 370 460" preserveAspectRatio="none" aria-hidden="true">
+      <g fill="none" stroke="rgba(255,255,255,.26)" stroke-width="1.2" vector-effect="non-scaling-stroke">
+        <!-- touchlines + halfway -->
+        <rect x="12" y="12" width="346" height="436"/>
+        <line x1="12" y1="230" x2="358" y2="230"/>
+        <circle cx="185" cy="230" r="44"/>
+        <!-- top third (open at the goal line — it is already the touchline) -->
+        <path d="M82 12 V80 H288 V12"/>
+        <path d="M138 12 V35 H232 V12"/>
+        <path d="M146.9 80 A44 44 0 0 0 223.1 80"/>
+        <!-- bottom third -->
+        <path d="M82 448 V380 H288 V448"/>
+        <path d="M138 448 V425 H232 V448"/>
+        <path d="M146.9 380 A44 44 0 0 1 223.1 380"/>
+        <!-- corner arcs -->
+        <path d="M12 20 A8 8 0 0 0 20 12"/>
+        <path d="M350 12 A8 8 0 0 0 358 20"/>
+        <path d="M12 440 A8 8 0 0 1 20 448"/>
+        <path d="M358 440 A8 8 0 0 0 350 448"/>
+      </g>
+      <g fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.2" vector-effect="non-scaling-stroke">
+        <path d="M166 12 V6 H204 V12"/>
+        <path d="M166 448 V454 H204 V448"/>
+      </g>
+      <g fill="rgba(255,255,255,.26)">
+        <circle cx="185" cy="230" r="1.8"/>
+        <circle cx="185" cy="58" r="1.6"/>
+        <circle cx="185" cy="402" r="1.6"/>
+      </g>
+    </svg></div>
+  </div>
+
+  <!-- Bench -->
+  <div class="bench">
+    <div class="bench-hdr">
+      <span class="bench-title">Bench</span>
+      <span class="bench-count" id="benchCnt"></span>
+    </div>
+    <div class="bench-div"></div>
+    <div class="bench-row" id="benchRow"
+      ondragover="onBenchDragOver(event)" ondragleave="onBenchDragLeave()"
+      ondrop="onBenchDrop(event)"></div>
+  </div>
+
 </div>
 
-<!-- Popup -->
 <div class="overlay" id="overlay" style="display:none" onclick="closePopup()"></div>
 <div class="popup" id="popup" style="display:none"></div>
 
 <script>
-// ── Jersey SVG ───────────────────────────────────────────────
-const JP = {
-  outline:'M20,8 L33,14 C38,3 62,3 67,14 L80,8 L98,25 L88,41 L76,33 L76,88 Q76,94 70,96 L30,96 Q24,94 24,88 L24,33 L12,41 L2,25 Z',
-  lsl:'M20,8 L33,14 L24,33 L12,41 L2,25 Z',
-  rsl:'M80,8 L67,14 L76,33 L88,41 L98,25 Z',
-  body:'M33,14 C38,3 62,3 67,14 L76,33 L76,88 Q76,94 70,96 L30,96 Q24,94 24,88 L24,33 Z'
-};
-let _jid = 0;
-
-function jerseyIcon(kit, sz=44, num=null) {
-  const { body='#c00', sleeve, collar='v', stripeColor=null, stripeType=null } = kit;
-  const sl = sleeve || body;
-  const id = 'j'+(++_jid);
-  const isWhite = /^#(fff|ffffff)$/i.test(body.trim());
-  const isWhiteSl = /^#(fff|ffffff)$/i.test(sl.trim());
-
-  let defs = '<defs>';
-  let bodyFill = body;
-  if (stripeType==='vertical' && stripeColor) {
-    defs += `<pattern id="${id}p" x="0" y="0" width="12" height="100" patternUnits="userSpaceOnUse"><rect width="6" height="100" fill="${body}"/><rect x="6" width="6" height="100" fill="${stripeColor}"/></pattern>`;
-    bodyFill = `url(#${id}p)`;
-    defs += `<clipPath id="${id}bc"><path d="${JP.body}"/></clipPath>`;
-  } else if (stripeType==='hoops' && stripeColor) {
-    defs += `<pattern id="${id}p" x="0" y="0" width="100" height="12" patternUnits="userSpaceOnUse"><rect width="100" height="6" fill="${body}"/><rect y="6" width="100" height="6" fill="${stripeColor}"/></pattern>`;
-    bodyFill = `url(#${id}p)`;
-    defs += `<clipPath id="${id}bc"><path d="${JP.body}"/></clipPath>`;
-  }
-  defs += `<linearGradient id="${id}sh" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0%" stop-color="rgba(0,0,0,.22)"/>
-    <stop offset="22%" stop-color="rgba(0,0,0,0)"/>
-    <stop offset="78%" stop-color="rgba(0,0,0,0)"/>
-    <stop offset="100%" stop-color="rgba(0,0,0,.16)"/>
-  </linearGradient>
-  <radialGradient id="${id}hi" cx="50%" cy="28%" r="38%">
-    <stop offset="0%" stop-color="rgba(255,255,255,.18)"/>
-    <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-  </radialGradient></defs>`;
-
-  const collarStroke = isWhite ? 'rgba(80,80,80,.5)' : _darken(body,35);
-  let collarEl = '';
-  if (collar==='v')     collarEl = `<path d="M38,14 L50,30 L62,14" fill="none" stroke="${collarStroke}" stroke-width="2" stroke-linejoin="round"/>`;
-  else if (collar==='round') collarEl = `<path d="M38,14 Q50,25 62,14" fill="none" stroke="${collarStroke}" stroke-width="2"/>`;
-  else if (collar==='polo')  collarEl = `<rect x="39" y="9" width="22" height="9" rx="3" fill="${sl}"/><rect x="39" y="9" width="22" height="9" rx="3" fill="none" stroke="${collarStroke}" stroke-width="1.2"/>`;
-
-  const outlineColor = (isWhite||isWhiteSl) ? 'rgba(120,120,120,.45)' : 'rgba(0,0,0,.32)';
-
-  let h = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:${sz}px;height:${sz}px;display:block">${defs}`;
-  if (stripeType) {
-    h += `<path d="${JP.body}" fill="${body}"/>`;
-    h += `<rect width="100" height="100" fill="${bodyFill}" clip-path="url(#${id}bc)"/>`;
-  } else {
-    h += `<path d="${JP.body}" fill="${bodyFill}"/>`;
-  }
-  h += `<path d="${JP.lsl}" fill="${sl}"/>`;
-  h += `<path d="${JP.rsl}" fill="${sl}"/>`;
-  h += `<line x1="33" y1="14" x2="24" y2="33" stroke="rgba(0,0,0,.18)" stroke-width=".9"/>`;
-  h += `<line x1="67" y1="14" x2="76" y2="33" stroke="rgba(0,0,0,.18)" stroke-width=".9"/>`;
-  h += `<path d="${JP.outline}" fill="url(#${id}sh)"/>`;
-  h += `<path d="${JP.outline}" fill="url(#${id}hi)"/>`;
-  h += `<path d="${JP.outline}" fill="none" stroke="${outlineColor}" stroke-width="1.6" stroke-linejoin="round"/>`;
-  h += collarEl;
-  if (num !== null) {
-    const ns = String(num);
-    const fs = ns.length > 2 ? 17 : 21;
-    const nc = (isWhite||isWhiteSl) ? 'rgba(30,30,30,.9)' : 'rgba(255,255,255,.95)';
-    h += `<text x="50" y="72" text-anchor="middle" dominant-baseline="middle" font-family="Inter,system-ui,sans-serif" font-size="${fs}" font-weight="800" fill="${nc}" letter-spacing="-1">${ns}</text>`;
-  }
-  h += `</svg>`;
-  return h;
-}
-
-function _darken(hex, amt) {
-  if (!hex||hex.length<7) return hex;
-  let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  return '#'+[r,g,b].map(v=>Math.max(0,v-amt).toString(16).padStart(2,'0')).join('');
-}
-
-// ── Mini 3D pitch ────────────────────────────────────────────
-const MP = { tw:92, bw:154, top:12, bot:206, cx:82 };
-function proj3d(fx, fy) {
-  const t = fy/100, y = MP.top+(MP.bot-MP.top)*t;
-  const hw = MP.tw/2+(MP.bw/2-MP.tw/2)*t;
-  return { x: +(MP.cx+(fx/100-.5)*hw*2).toFixed(2), y: +y.toFixed(2) };
-}
-function miniPitchSVG(f) {
-  const pos = FORMATIONS[f];
-  const {cx,tw,bw,top,bot}=MP;
-  const tl=cx-tw/2,tr=cx+tw/2,bl=cx-bw/2,br=cx+bw/2;
-  const p=(fx,fy)=>proj3d(fx,fy);
-  const outline=`M${tl},${top} L${tr},${top} L${br},${bot} L${bl},${bot} Z`;
-  const hw1=p(0,50),hw2=p(100,50);
-  function q(a,b,c,d){return `M${a.x},${a.y} L${b.x},${b.y} L${c.x},${c.y} L${d.x},${d.y} Z`}
-  const tpa1=p(21,0),tpa2=p(79,0),tpa3=p(79,13.5),tpa4=p(21,13.5);
-  const bpa1=p(21,86.5),bpa2=p(79,86.5),bpa3=p(79,100),bpa4=p(21,100);
-  const ctr=p(50,50);
-  const circHw=(bw-tw)/2*0.5+tw/2*0.17;
-  const S='rgba(255,255,255,.42)';
-  const dots=pos.map(pos=>{
-    const pt=proj3d(pos.x,pos.y);
-    const r=3.2+2.4*(pos.y/100);
-    return `<circle cx="${pt.x}" cy="${pt.y}" r="${r.toFixed(1)}" fill="${pos.role==='GK'?'#f59e0b':'white'}" opacity=".9"/>`;
-  }).join('');
-  return `<svg viewBox="0 0 164 218" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-    <defs>
-      <pattern id="mps" x="0" y="0" width="164" height="36" patternUnits="userSpaceOnUse">
-        <rect width="164" height="18" fill="#28592288"/><rect y="18" width="164" height="18" fill="#2b5f2588"/>
-      </pattern>
-      <clipPath id="mpclip"><path d="${outline}"/></clipPath>
-    </defs>
-    <rect width="164" height="218" fill="#1e4a1a"/>
-    <path d="${outline}" fill="url(#mps)"/>
-    <g stroke="${S}" stroke-width="1" fill="none" clip-path="url(#mpclip)">
-      <path d="${outline}"/>
-      <line x1="${hw1.x}" y1="${hw1.y}" x2="${hw2.x}" y2="${hw2.y}"/>
-      <ellipse cx="${ctr.x}" cy="${ctr.y}" rx="${circHw.toFixed(1)}" ry="7"/>
-      <path d="${q(tpa1,tpa2,tpa3,tpa4)}"/>
-      <path d="${q(bpa1,bpa2,bpa3,bpa4)}"/>
-    </g>
-    ${dots}
-  </svg>`;
-}
-
 // ── Team data ─────────────────────────────────────────────────
 const TEAMS = {
   'Arsenal':{kit:{body:'#EF0107',sleeve:'#EF0107',collar:'round'},players:[
@@ -837,16 +678,6 @@ function initLineup(){
   S.roles={};
 }
 
-// ── Mobile tab ────────────────────────────────────────────────
-let _activeTab = 'pitch';
-
-function setTab(tab) {
-  _activeTab = tab;
-  document.getElementById('colFormation').classList.toggle('mob-active', tab==='formation');
-  document.getElementById('colSquad').classList.toggle('mob-active', tab==='squad');
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.id==='tab-'+tab));
-}
-
 // ── Drag (mouse + touch unified) ─────────────────────────────
 let drag={on:false,posId:null,moved:false,sx:0,sy:0};
 let benchDragIdx=null;
@@ -951,9 +782,24 @@ function openPopup(e,posId){
   const li=S.lineup.find(l=>l.posId===posId);
   const player=li?.playerIdx!=null?squad[li.playerIdx]:null;
   const pos=FORMATIONS[S.formation].find(p=>p.id===posId);
-  const rows=S.bench.length===0
-    ?`<div class="popup-empty">No bench players available</div>`
-    :S.bench.map(idx=>{const p=squad[idx];return `<div class="popup-row" onclick="doSub(${idx})"><span class="popup-row-num">${p.n}</span><span class="popup-row-name">${p.name}</span><span class="popup-row-pos">${p.pos}</span></div>`;}).join('');
+  // Bench is split so natural replacements for the outgoing player come first,
+  // with everyone else listed underneath.
+  const wantPos=player?player.pos:pos?.role;
+  const same=S.bench.filter(i=>squad[i].pos===wantPos);
+  const other=S.bench.filter(i=>squad[i].pos!==wantPos);
+  const row=idx=>{const p=squad[idx];
+    return `<div class="popup-row" onclick="doSub(${idx})"><span class="popup-row-num">${p.n}</span>`
+      +`<span class="popup-row-name">${p.name}</span><span class="popup-row-pos">${p.pos}</span></div>`;};
+  let rows;
+  if(S.bench.length===0){
+    rows=`<div class="popup-empty">No bench players available</div>`;
+  }else if(!same.length||!other.length){
+    rows=`<div class="popup-list">${S.bench.map(row).join('')}</div>`;
+  }else{
+    rows=`<div class="popup-list">${same.map(row).join('')}</div>`
+      +`<div class="popup-sub-label">OTHER PLAYERS</div>`
+      +`<div class="popup-list">${other.map(row).join('')}</div>`;
+  }
   const cur=getRole(posId);
   const opts=roleSetFor(pos.role).map(r=>
     `<option value="${r.id}"${r.id===cur?' selected':''}>${r.name}</option>`).join('');
@@ -963,7 +809,7 @@ function openPopup(e,posId){
     +`<div class="popup-sub-label">ROLE</div>`
     +`<div class="role-select-wrap"><select class="role-select" onchange="chooseRole(this.value)">${opts}</select></div>`
     +`<div class="popup-divider"></div>`
-    +`<div class="popup-sub-label">SUBSTITUTE WITH</div><div class="popup-list">${rows}</div>`
+    +`<div class="popup-sub-label">SUBSTITUTE WITH${same.length&&other.length?' &middot; '+wantPos:''}</div>${rows}`
     +`</div>`;
   popup.style.display='flex';
   document.getElementById('overlay').style.display='block';
@@ -996,28 +842,54 @@ function setFormation(f){
   const used=new Set(S.lineup.map(l=>l.playerIdx).filter(i=>i!==null));
   S.bench=squad.map((_,i)=>i).filter(i=>!used.has(i));
   S.overrides={};
-  document.querySelectorAll('.f-btn').forEach(b=>b.classList.toggle('active',b.dataset.f===f));
   document.querySelectorAll('.p-card').forEach(el=>{el.classList.add('animating');setTimeout(()=>el.classList.remove('animating'),400);});
-  document.getElementById('miniPitchWrap').innerHTML=miniPitchSVG(f);
-  setTab('pitch');
+  syncControls();
   render();
 }
 
+// ── Split-button menu ─────────────────────────────────────────
+function toggleMenu(e){
+  if(e)e.stopPropagation();
+  const m=document.getElementById('actionMenu'),b=document.getElementById('menuBtn');
+  const open=m.hidden;
+  m.hidden=!open;b.setAttribute('aria-expanded',String(open));
+}
+function closeMenu(){
+  const m=document.getElementById('actionMenu');
+  if(m&&!m.hidden){m.hidden=true;document.getElementById('menuBtn').setAttribute('aria-expanded','false');}
+}
+function menuAction(a){
+  closeMenu();
+  if(a==='reset')resetAll();
+  else if(a==='export')exportSnapshot();
+}
+document.addEventListener('click',closeMenu);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+
 // ── Render ────────────────────────────────────────────────────
-function render(){renderTokens();renderBench();renderSquad();document.getElementById('benchCnt').textContent=S.bench.length+' players';}
+function syncControls(){
+  document.getElementById('formationLabel').textContent=S.formation;
+  document.getElementById('teamLabel').textContent=S.team;
+  document.getElementById('formationSel').value=S.formation;
+  document.getElementById('teamSel').value=S.team;
+}
 
-function _gkKit(kit){return{...kit,body:_darken(kit.body,22),sleeve:_darken(kit.sleeve||kit.body,22),stripeType:null};}
+function render(){
+  renderTokens();renderBench();
+  document.getElementById('benchCnt').textContent=S.bench.length+' players';
+}
 
+// Pitch token — dark card (number over name) with the position pill tucked
+// 4px under it, per Badge1 in the frame.
 function renderTokens(){
   const canvas=document.getElementById('pitchCanvas');
-  const squad=TEAMS[S.team].players,kit=TEAMS[S.team].kit,pos=FORMATIONS[S.formation];
+  const squad=TEAMS[S.team].players,pos=FORMATIONS[S.formation];
   const live=new Set(S.lineup.map(l=>l.posId));
   canvas.querySelectorAll('.p-card').forEach(el=>{if(!live.has(+el.dataset.pid))el.remove();});
   S.lineup.forEach(li=>{
     const pd=pos.find(p=>p.id===li.posId),ov=S.overrides[li.posId];
     const x=ov?ov.x:pd.x,y=ov?ov.y:pd.y;
     const player=li.playerIdx!==null?squad[li.playerIdx]:null;
-    const isGK=pd.role==='GK',uk=isGK?_gkKit(kit):kit;
     let el=canvas.querySelector(`[data-pid="${li.posId}"]`);
     if(!el){
       el=document.createElement('div');el.className='p-card';el.dataset.pid=li.posId;
@@ -1026,89 +898,117 @@ function renderTokens(){
       el.addEventListener('click',e=>openPopup(e,li.posId));
       canvas.appendChild(el);
     }
-    const sz=38;
-    el.innerHTML=`<div class="jersey-shell">${jerseyIcon(uk,sz,player?player.n:null)}</div><div class="p-label"><span class="p-label-name">${player?player.name:pd.role}</span><span class="p-label-pos">${roleLabel(li.posId)}</span></div>`;
+    el.innerHTML=`<span class="pt-card"><span class="pt-num">${player?player.n:'&nbsp;'}</span>`
+      +`<span class="pt-name">${player?player.name:pd.role}</span></span>`
+      +`<span class="pill pt-pill">${roleLabel(li.posId)}</span>`;
     el.style.left=x+'%';el.style.top=y+'%';
   });
 }
 
+// Bench card — pill above a white card, per the bench row in the frame.
 function renderBench(){
-  const squad=TEAMS[S.team].players,kit=TEAMS[S.team].kit;
+  const squad=TEAMS[S.team].players;
   document.getElementById('benchRow').innerHTML=S.bench.map(idx=>{
-    const p=squad[idx],uk=p.pos==='GK'?_gkKit(kit):kit;
-    const posClass=p.pos==='GK'?'b-pos-GK':['CB','LB','RB','DEF'].includes(p.pos)?'b-pos-DEF':['CM','DM','AM','MID'].includes(p.pos)?'b-pos-MID':'b-pos-FWD';
-    return `<div class="b-card" draggable="true" ondragstart="onBenchDragStart(event,${idx})"><span class="b-pos-badge ${posClass}">${p.pos}</span><div class="jersey-shell">${jerseyIcon(uk,36,p.n)}</div><span class="b-name">${p.name}</span><span class="b-num">${p.n}</span></div>`;
+    const p=squad[idx];
+    return `<div class="b-card" draggable="true" ondragstart="onBenchDragStart(event,${idx})">`
+      +`<span class="pill b-pill">${p.pos}</span>`
+      +`<span class="b-body"><span class="b-num">${p.n}</span><span class="b-name">${p.name}</span></span>`
+      +`</div>`;
   }).join('');
 }
-
-function renderSquad(){
-  const squad=TEAMS[S.team].players;
-  const used=new Set(S.lineup.map(l=>l.playerIdx).filter(x=>x!==null));
-  document.getElementById('sqList').innerHTML=squad.map((p,i)=>`<div class="sq-row ${used.has(i)?'used':''}" draggable="${!used.has(i)}" ondragstart="${!used.has(i)?`onBenchDragStart(event,${i})`:''}"><span class="sq-num">${p.n}</span><span class="sq-name">${p.name}</span><span class="sq-pos">${p.pos}</span></div>`).join('');
-}
-
-function isMobile(){return window.innerWidth<768;}
 
 // ── Export PNG ────────────────────────────────────────────────
 async function exportSnapshot(){
   const btn=document.getElementById('exportBtn');
-  btn.querySelector('.btn-text').textContent='Saving…';btn.disabled=true;
-  const CW=840,CH=1260;
+  btn.disabled=true;
+  // Rendered at 3x the 370x460 design pitch, with the same tokens.
+  const SC=3, PW=370*SC, PH=460*SC, PAD=16*SC, HDR=56*SC, FOOT=56*SC;
+  const CW=PW+PAD*2, CH=HDR+PH+FOOT;
   const cv=document.createElement('canvas');cv.width=CW;cv.height=CH;
   const ctx=cv.getContext('2d');
-  // Pitch stripes
-  ctx.save();_rr(ctx,0,0,CW,CH,18);ctx.clip();
-  for(let i=0,e=true;i<CH;i+=54,e=!e){ctx.fillStyle=e?'#285922':'#2b5f25';ctx.fillRect(0,i,CW,54);}
-  // Lines
-  const SC=CW/420;
-  ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=2.2;ctx.fillStyle='rgba(255,255,255,.5)';
-  ctx.strokeRect(18*SC,18*SC,384*SC,609*SC);
-  _l(ctx,18*SC,322.5*SC,402*SC,322.5*SC);
-  ctx.beginPath();ctx.arc(210*SC,322.5*SC,54*SC,0,Math.PI*2);ctx.stroke();
-  ctx.beginPath();ctx.arc(210*SC,322.5*SC,3.5,0,Math.PI*2);ctx.fill();
-  ctx.strokeRect(88*SC,18*SC,244*SC,87*SC);ctx.strokeRect(143*SC,18*SC,134*SC,28*SC);
-  ctx.beginPath();ctx.arc(210*SC,82*SC,2.5,0,Math.PI*2);ctx.fill();
-  ctx.strokeRect(88*SC,540*SC,244*SC,87*SC);ctx.strokeRect(143*SC,599*SC,134*SC,28*SC);
-  ctx.beginPath();ctx.arc(210*SC,563*SC,2.5,0,Math.PI*2);ctx.fill();
+  const F=(w,sz)=>`${w} ${sz}px Geist,system-ui,sans-serif`;
+  try{ await document.fonts.ready; }catch(e){}
+
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,CW,CH);
+  // Header: team + formation
+  ctx.fillStyle='#262626';ctx.font=F(600,16*SC);ctx.textAlign='left';ctx.textBaseline='middle';
+  ctx.fillText(S.team,PAD,HDR/2);
+  ctx.fillStyle='#737373';ctx.font=F(500,14*SC);ctx.textAlign='right';
+  ctx.fillText(S.formation,CW-PAD,HDR/2);
+
+  // Pitch
+  ctx.save();ctx.beginPath();ctx.rect(PAD,HDR,PW,PH);ctx.clip();
+  ctx.fillStyle='#18814f';ctx.fillRect(PAD,HDR,PW,PH);
+  const band=PH/8;
+  for(let i=0;i<8;i++){
+    ctx.fillStyle=i%2?'rgba(0,0,0,.03)':'rgba(255,255,255,.035)';
+    ctx.fillRect(PAD,HDR+i*band,PW,band);
+  }
+  // markings, same geometry as the on-screen 370x460 overlay
+  const X=v=>PAD+v*SC, Y=v=>HDR+v*SC, R=v=>v*SC;
+  ctx.strokeStyle='rgba(255,255,255,.26)';ctx.lineWidth=1.2*SC;
+  ctx.strokeRect(X(12),Y(12),R(346),R(436));
+  _l(ctx,X(12),Y(230),X(358),Y(230));
+  ctx.beginPath();ctx.arc(X(185),Y(230),R(44),0,Math.PI*2);ctx.stroke();
+  const openBox=(x1,x2,yGoal,yFar)=>{ctx.beginPath();ctx.moveTo(X(x1),Y(yGoal));
+    ctx.lineTo(X(x1),Y(yFar));ctx.lineTo(X(x2),Y(yFar));ctx.lineTo(X(x2),Y(yGoal));ctx.stroke();};
+  openBox(82,288,12,80);
+  openBox(138,232,12,35);
+  ctx.beginPath();ctx.arc(X(185),Y(58),R(44),0.5191,Math.PI-0.5191);ctx.stroke();
+  openBox(82,288,448,380);
+  openBox(138,232,448,425);
+  ctx.beginPath();ctx.arc(X(185),Y(402),R(44),Math.PI+0.5191,-0.5191);ctx.stroke();
+  ctx.beginPath();ctx.arc(X(12),Y(12),R(8),0,Math.PI/2);ctx.stroke();
+  ctx.beginPath();ctx.arc(X(358),Y(12),R(8),Math.PI/2,Math.PI);ctx.stroke();
+  ctx.beginPath();ctx.arc(X(12),Y(448),R(8),-Math.PI/2,0);ctx.stroke();
+  ctx.beginPath();ctx.arc(X(358),Y(448),R(8),Math.PI,1.5*Math.PI);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,.16)';
+  openBox(166,204,12,6);
+  openBox(166,204,448,454);
+  ctx.fillStyle='rgba(255,255,255,.26)';
+  for(const[cx,cy,r]of[[185,230,1.8],[185,58,1.6],[185,402,1.6]]){
+    ctx.beginPath();ctx.arc(X(cx),Y(cy),R(r),0,Math.PI*2);ctx.fill();}
   ctx.restore();
-  // Players
-  const squad=TEAMS[S.team].players,kit=TEAMS[S.team].kit,fpos=FORMATIONS[S.formation];
-  const JSZ=88;
+
+  // Tokens
+  const squad=TEAMS[S.team].players,fpos=FORMATIONS[S.formation];
+  ctx.textAlign='center';
   for(const li of S.lineup){
     const pd=fpos.find(p=>p.id===li.posId),ov=S.overrides[li.posId];
-    const cx=((ov?ov.x:pd.x)/100)*CW,cy=((ov?ov.y:pd.y)/100)*CH;
+    const cx=PAD+((ov?ov.x:pd.x)/100)*PW, cy=HDR+((ov?ov.y:pd.y)/100)*PH;
     const player=li.playerIdx!==null?squad[li.playerIdx]:null;
-    const uk=pd.role==='GK'?_gkKit(kit):kit;
-    const img=await _si(jerseyIcon(uk,JSZ,player?player.n:null));
-    ctx.drawImage(img,cx-JSZ/2,cy-JSZ/2-6,JSZ,JSZ);
-    const name=player?player.name:pd.role;
-    ctx.font='bold 17px Inter,system-ui,sans-serif';ctx.textAlign='center';
-    const tw=ctx.measureText(name).width;
-    ctx.fillStyle='rgba(0,0,0,.78)';_rr(ctx,cx-tw/2-7,cy+JSZ/2-10,tw+14,22,5);ctx.fill();
-    ctx.fillStyle='#fff';ctx.fillText(name,cx,cy+JSZ/2+6);
-    ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='600 13px Inter,system-ui,sans-serif';
-    ctx.fillText(roleLabel(li.posId),cx,cy+JSZ/2+22);
+    const name=player?player.name:pd.role, num=player?String(player.n):'';
+    const role=roleLabel(li.posId);
+    // card: 2/10/8 padding, 12px radius, number 12/14 + name 12/18
+    ctx.font=F(600,12*SC);
+    const cw=Math.max(ctx.measureText(name).width,14*SC)+20*SC;
+    const chh=(2+14+18+8)*SC, ctop=cy-chh/2-6*SC;
+    ctx.fillStyle='#171717';_rr(ctx,cx-cw/2,ctop,cw,chh,12*SC);ctx.fill();
+    ctx.textBaseline='top';
+    ctx.fillStyle='rgba(255,255,255,.4)';ctx.font=F(500,12*SC);
+    ctx.fillText(num,cx,ctop+2*SC+1*SC);
+    ctx.fillStyle='#ffffff';ctx.font=F(600,12*SC);
+    ctx.fillText(name,cx,ctop+(2+14)*SC+2*SC);
+    // pill: overlaps the card bottom by 4px
+    ctx.font=F(600,10*SC);
+    const pw=ctx.measureText(role).width+13.334*SC, ph=20*SC, ptop=ctop+chh-4*SC;
+    ctx.fillStyle='#2f6a4e';_rr(ctx,cx-pw/2,ptop,pw,ph,13.333*SC);ctx.fill();
+    ctx.fillStyle='#ffffff';ctx.textBaseline='middle';
+    ctx.fillText(role,cx,ptop+ph/2);
+    ctx.textBaseline='top';
   }
-  // Header bar
-  ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,CW,52);
-  ctx.fillStyle='#fff';ctx.font='bold 22px Inter,system-ui,sans-serif';ctx.textAlign='left';
-  ctx.fillText(S.team,24,34);
-  ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='600 17px Inter,system-ui,sans-serif';
-  ctx.fillText(S.formation,CW-80,34);
-  // Logo bar at bottom
-  const BH=68;
-  ctx.fillStyle='#000';ctx.fillRect(0,CH-BH,CW,BH);
-  ctx.fillStyle='rgba(255,255,255,.07)';ctx.fillRect(0,CH-BH,CW,1);
-  ctx.font='800 28px Inter,system-ui,sans-serif';ctx.textAlign='left';
-  const tacW=ctx.measureText('Tac').width;
-  const startX=CW/2-ctx.measureText('Tactico').width/2;
-  ctx.fillStyle='#fff';ctx.fillText('Tac',startX,CH-BH/2+10);
-  ctx.fillStyle='#10b981';ctx.fillText('tico',startX+tacW,CH-BH/2+10);
-  ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='500 13px Inter,system-ui,sans-serif';ctx.textAlign='center';
-  ctx.fillText('Football Tactics Builder',CW/2,CH-BH/2+28);
-  // Download
-  const a=document.createElement('a');a.download=`${S.team.replace(/\s+/g,'_')}_${S.formation}.png`;a.href=cv.toDataURL('image/png');a.click();
-  btn.querySelector('.btn-text').textContent='Export';btn.disabled=false;
+
+  // Footer wordmark
+  ctx.textBaseline='middle';ctx.textAlign='center';
+  ctx.font=F(600,16*SC);
+  const fy=HDR+PH+FOOT/2, tw=ctx.measureText('Tactico').width, sx=CW/2-tw/2;
+  ctx.textAlign='left';
+  ctx.fillStyle='#262626';ctx.fillText('Tac',sx,fy);
+  ctx.fillStyle='#18814f';ctx.fillText('tico',sx+ctx.measureText('Tac').width,fy);
+
+  const a=document.createElement('a');a.download=`${S.team.replace(/\s+/g,'_')}_${S.formation}.png`;
+  a.href=cv.toDataURL('image/png');a.click();
+  btn.disabled=false;
 }
 function _si(s){return new Promise(r=>{const b=new Blob([s],{type:'image/svg+xml'}),u=URL.createObjectURL(b),i=new Image();i.onload=()=>{URL.revokeObjectURL(u);r(i);};i.src=u;});}
 function _l(ctx,x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
@@ -1118,14 +1018,19 @@ function resetAll(){S.overrides={};S.roles={};initLineup();render();}
 
 // ── Init ──────────────────────────────────────────────────────
 function init(){
-  const sel=document.getElementById('teamSel');
-  Object.keys(TEAMS).sort().forEach(name=>{const o=document.createElement('option');o.value=name;o.textContent=name;if(name===S.team)o.selected=true;sel.appendChild(o);});
-  sel.addEventListener('change',e=>{S.team=e.target.value;initLineup();render();});
-  const grid=document.getElementById('fGrid');
-  Object.keys(FORMATIONS).forEach(f=>{const b=document.createElement('button');b.className='f-btn'+(f===S.formation?' active':'');b.dataset.f=f;b.textContent=f;b.addEventListener('click',()=>setFormation(f));grid.appendChild(b);});
-  document.getElementById('miniPitchWrap').innerHTML=miniPitchSVG(S.formation);
-  initLineup();render();
-  // Handle resize
+  const team=document.getElementById('teamSel');
+  Object.keys(TEAMS).sort().forEach(name=>{
+    const o=document.createElement('option');o.value=name;o.textContent=name;team.appendChild(o);});
+  team.value=S.team;
+  team.addEventListener('change',e=>{S.team=e.target.value;initLineup();syncControls();render();});
+
+  const form=document.getElementById('formationSel');
+  Object.keys(FORMATIONS).forEach(f=>{
+    const o=document.createElement('option');o.value=f;o.textContent=f;form.appendChild(o);});
+  form.value=S.formation;
+  form.addEventListener('change',e=>setFormation(e.target.value));
+
+  syncControls();initLineup();render();
   window.addEventListener('resize',()=>render());
 }
 document.addEventListener('DOMContentLoaded',init);
