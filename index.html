@@ -920,97 +920,143 @@ function renderBench(){
 // ── Export PNG ────────────────────────────────────────────────
 async function exportSnapshot(){
   const btn=document.getElementById('exportBtn');
+  if(btn.disabled)return;
   btn.disabled=true;
-  // Rendered at 3x the 370x460 design pitch, with the same tokens.
-  const SC=3, PW=370*SC, PH=460*SC, PAD=16*SC, HDR=56*SC, FOOT=56*SC;
-  const CW=PW+PAD*2, CH=HDR+PH+FOOT;
-  const cv=document.createElement('canvas');cv.width=CW;cv.height=CH;
-  const ctx=cv.getContext('2d');
-  const F=(w,sz)=>`${w} ${sz}px Geist,system-ui,sans-serif`;
-  try{ await document.fonts.ready; }catch(e){}
+  const label=btn.childNodes[btn.childNodes.length-1];
+  const restore=label&&label.nodeType===3?label.textContent:null;
+  if(restore)label.textContent=' Saving…';
+  try{
+    // Rendered at 3x the 370x460 design pitch, with the same tokens.
+    const SC=3, PW=370*SC, PH=460*SC, PAD=16*SC, HDR=56*SC, FOOT=56*SC;
+    const CW=PW+PAD*2, CH=HDR+PH+FOOT;
+    const cv=document.createElement('canvas');cv.width=CW;cv.height=CH;
+    const ctx=cv.getContext('2d');
+    const F=(w,sz)=>`${w} ${sz}px Geist,system-ui,sans-serif`;
+    try{ await document.fonts.ready; }catch(e){}
 
-  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,CW,CH);
-  // Header: team + formation
-  ctx.fillStyle='#262626';ctx.font=F(600,16*SC);ctx.textAlign='left';ctx.textBaseline='middle';
-  ctx.fillText(S.team,PAD,HDR/2);
-  ctx.fillStyle='#737373';ctx.font=F(500,14*SC);ctx.textAlign='right';
-  ctx.fillText(S.formation,CW-PAD,HDR/2);
+    ctx.fillStyle='#ffffff';ctx.fillRect(0,0,CW,CH);
+    // Header: team + formation
+    ctx.fillStyle='#262626';ctx.font=F(600,16*SC);ctx.textAlign='left';ctx.textBaseline='middle';
+    ctx.fillText(S.team,PAD,HDR/2);
+    ctx.fillStyle='#737373';ctx.font=F(500,14*SC);ctx.textAlign='right';
+    ctx.fillText(S.formation,CW-PAD,HDR/2);
 
-  // Pitch
-  ctx.save();ctx.beginPath();ctx.rect(PAD,HDR,PW,PH);ctx.clip();
-  ctx.fillStyle='#18814f';ctx.fillRect(PAD,HDR,PW,PH);
-  const band=PH/8;
-  for(let i=0;i<8;i++){
-    ctx.fillStyle=i%2?'rgba(0,0,0,.03)':'rgba(255,255,255,.035)';
-    ctx.fillRect(PAD,HDR+i*band,PW,band);
+    // Pitch
+    ctx.save();ctx.beginPath();ctx.rect(PAD,HDR,PW,PH);ctx.clip();
+    ctx.fillStyle='#18814f';ctx.fillRect(PAD,HDR,PW,PH);
+    const band=PH/8;
+    for(let i=0;i<8;i++){
+      ctx.fillStyle=i%2?'rgba(0,0,0,.03)':'rgba(255,255,255,.035)';
+      ctx.fillRect(PAD,HDR+i*band,PW,band);
+    }
+    // markings, same geometry as the on-screen 370x460 overlay
+    const X=v=>PAD+v*SC, Y=v=>HDR+v*SC, R=v=>v*SC;
+    ctx.strokeStyle='rgba(255,255,255,.26)';ctx.lineWidth=1.2*SC;
+    ctx.strokeRect(X(12),Y(12),R(346),R(436));
+    _l(ctx,X(12),Y(230),X(358),Y(230));
+    ctx.beginPath();ctx.arc(X(185),Y(230),R(44),0,Math.PI*2);ctx.stroke();
+    const openBox=(x1,x2,yGoal,yFar)=>{ctx.beginPath();ctx.moveTo(X(x1),Y(yGoal));
+      ctx.lineTo(X(x1),Y(yFar));ctx.lineTo(X(x2),Y(yFar));ctx.lineTo(X(x2),Y(yGoal));ctx.stroke();};
+    openBox(82,288,12,80);
+    openBox(138,232,12,35);
+    ctx.beginPath();ctx.arc(X(185),Y(58),R(44),0.5191,Math.PI-0.5191);ctx.stroke();
+    openBox(82,288,448,380);
+    openBox(138,232,448,425);
+    ctx.beginPath();ctx.arc(X(185),Y(402),R(44),Math.PI+0.5191,-0.5191);ctx.stroke();
+    ctx.beginPath();ctx.arc(X(12),Y(12),R(8),0,Math.PI/2);ctx.stroke();
+    ctx.beginPath();ctx.arc(X(358),Y(12),R(8),Math.PI/2,Math.PI);ctx.stroke();
+    ctx.beginPath();ctx.arc(X(12),Y(448),R(8),-Math.PI/2,0);ctx.stroke();
+    ctx.beginPath();ctx.arc(X(358),Y(448),R(8),Math.PI,1.5*Math.PI);ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.16)';
+    openBox(166,204,12,6);
+    openBox(166,204,448,454);
+    ctx.fillStyle='rgba(255,255,255,.26)';
+    for(const[cx,cy,r]of[[185,230,1.8],[185,58,1.6],[185,402,1.6]]){
+      ctx.beginPath();ctx.arc(X(cx),Y(cy),R(r),0,Math.PI*2);ctx.fill();}
+    ctx.restore();
+
+    // Tokens
+    const squad=TEAMS[S.team].players,fpos=FORMATIONS[S.formation];
+    ctx.textAlign='center';
+    for(const li of S.lineup){
+      const pd=fpos.find(p=>p.id===li.posId),ov=S.overrides[li.posId];
+      const cx=PAD+((ov?ov.x:pd.x)/100)*PW, cy=HDR+((ov?ov.y:pd.y)/100)*PH;
+      const player=li.playerIdx!==null?squad[li.playerIdx]:null;
+      const name=player?player.name:pd.role, num=player?String(player.n):'';
+      const role=roleLabel(li.posId);
+      // card: 2/10/8 padding, 12px radius, number 12/14 + name 12/18
+      ctx.font=F(600,12*SC);
+      const cw=Math.max(ctx.measureText(name).width,14*SC)+20*SC;
+      const chh=(2+14+18+8)*SC, ctop=cy-chh/2-6*SC;
+      ctx.fillStyle='#171717';_rr(ctx,cx-cw/2,ctop,cw,chh,12*SC);ctx.fill();
+      ctx.textBaseline='top';
+      ctx.fillStyle='rgba(255,255,255,.4)';ctx.font=F(500,12*SC);
+      ctx.fillText(num,cx,ctop+2*SC+1*SC);
+      ctx.fillStyle='#ffffff';ctx.font=F(600,12*SC);
+      ctx.fillText(name,cx,ctop+(2+14)*SC+2*SC);
+      // pill: overlaps the card bottom by 4px
+      ctx.font=F(600,10*SC);
+      const pw=ctx.measureText(role).width+13.334*SC, ph=20*SC, ptop=ctop+chh-4*SC;
+      ctx.fillStyle='#2f6a4e';_rr(ctx,cx-pw/2,ptop,pw,ph,13.333*SC);ctx.fill();
+      ctx.fillStyle='#ffffff';ctx.textBaseline='middle';
+      ctx.fillText(role,cx,ptop+ph/2);
+      ctx.textBaseline='top';
+    }
+
+    // Footer wordmark
+    ctx.textBaseline='middle';ctx.textAlign='center';
+    ctx.font=F(600,16*SC);
+    const fy=HDR+PH+FOOT/2, tw=ctx.measureText('Tactico').width, sx=CW/2-tw/2;
+    ctx.textAlign='left';
+    ctx.fillStyle='#262626';ctx.fillText('Tac',sx,fy);
+    ctx.fillStyle='#18814f';ctx.fillText('tico',sx+ctx.measureText('Tac').width,fy);
+
+    await saveCanvas(cv,`${S.team.replace(/\s+/g,'_')}_${S.formation}.png`);
+  }catch(err){
+    console.error('Export failed:',err);
+    alert('Could not export the image.\n\n'+(err&&err.message?err.message:err));
+  }finally{
+    btn.disabled=false;
+    if(restore)label.textContent=restore;
   }
-  // markings, same geometry as the on-screen 370x460 overlay
-  const X=v=>PAD+v*SC, Y=v=>HDR+v*SC, R=v=>v*SC;
-  ctx.strokeStyle='rgba(255,255,255,.26)';ctx.lineWidth=1.2*SC;
-  ctx.strokeRect(X(12),Y(12),R(346),R(436));
-  _l(ctx,X(12),Y(230),X(358),Y(230));
-  ctx.beginPath();ctx.arc(X(185),Y(230),R(44),0,Math.PI*2);ctx.stroke();
-  const openBox=(x1,x2,yGoal,yFar)=>{ctx.beginPath();ctx.moveTo(X(x1),Y(yGoal));
-    ctx.lineTo(X(x1),Y(yFar));ctx.lineTo(X(x2),Y(yFar));ctx.lineTo(X(x2),Y(yGoal));ctx.stroke();};
-  openBox(82,288,12,80);
-  openBox(138,232,12,35);
-  ctx.beginPath();ctx.arc(X(185),Y(58),R(44),0.5191,Math.PI-0.5191);ctx.stroke();
-  openBox(82,288,448,380);
-  openBox(138,232,448,425);
-  ctx.beginPath();ctx.arc(X(185),Y(402),R(44),Math.PI+0.5191,-0.5191);ctx.stroke();
-  ctx.beginPath();ctx.arc(X(12),Y(12),R(8),0,Math.PI/2);ctx.stroke();
-  ctx.beginPath();ctx.arc(X(358),Y(12),R(8),Math.PI/2,Math.PI);ctx.stroke();
-  ctx.beginPath();ctx.arc(X(12),Y(448),R(8),-Math.PI/2,0);ctx.stroke();
-  ctx.beginPath();ctx.arc(X(358),Y(448),R(8),Math.PI,1.5*Math.PI);ctx.stroke();
-  ctx.strokeStyle='rgba(255,255,255,.16)';
-  openBox(166,204,12,6);
-  openBox(166,204,448,454);
-  ctx.fillStyle='rgba(255,255,255,.26)';
-  for(const[cx,cy,r]of[[185,230,1.8],[185,58,1.6],[185,402,1.6]]){
-    ctx.beginPath();ctx.arc(X(cx),Y(cy),R(r),0,Math.PI*2);ctx.fill();}
-  ctx.restore();
-
-  // Tokens
-  const squad=TEAMS[S.team].players,fpos=FORMATIONS[S.formation];
-  ctx.textAlign='center';
-  for(const li of S.lineup){
-    const pd=fpos.find(p=>p.id===li.posId),ov=S.overrides[li.posId];
-    const cx=PAD+((ov?ov.x:pd.x)/100)*PW, cy=HDR+((ov?ov.y:pd.y)/100)*PH;
-    const player=li.playerIdx!==null?squad[li.playerIdx]:null;
-    const name=player?player.name:pd.role, num=player?String(player.n):'';
-    const role=roleLabel(li.posId);
-    // card: 2/10/8 padding, 12px radius, number 12/14 + name 12/18
-    ctx.font=F(600,12*SC);
-    const cw=Math.max(ctx.measureText(name).width,14*SC)+20*SC;
-    const chh=(2+14+18+8)*SC, ctop=cy-chh/2-6*SC;
-    ctx.fillStyle='#171717';_rr(ctx,cx-cw/2,ctop,cw,chh,12*SC);ctx.fill();
-    ctx.textBaseline='top';
-    ctx.fillStyle='rgba(255,255,255,.4)';ctx.font=F(500,12*SC);
-    ctx.fillText(num,cx,ctop+2*SC+1*SC);
-    ctx.fillStyle='#ffffff';ctx.font=F(600,12*SC);
-    ctx.fillText(name,cx,ctop+(2+14)*SC+2*SC);
-    // pill: overlaps the card bottom by 4px
-    ctx.font=F(600,10*SC);
-    const pw=ctx.measureText(role).width+13.334*SC, ph=20*SC, ptop=ctop+chh-4*SC;
-    ctx.fillStyle='#2f6a4e';_rr(ctx,cx-pw/2,ptop,pw,ph,13.333*SC);ctx.fill();
-    ctx.fillStyle='#ffffff';ctx.textBaseline='middle';
-    ctx.fillText(role,cx,ptop+ph/2);
-    ctx.textBaseline='top';
-  }
-
-  // Footer wordmark
-  ctx.textBaseline='middle';ctx.textAlign='center';
-  ctx.font=F(600,16*SC);
-  const fy=HDR+PH+FOOT/2, tw=ctx.measureText('Tactico').width, sx=CW/2-tw/2;
-  ctx.textAlign='left';
-  ctx.fillStyle='#262626';ctx.fillText('Tac',sx,fy);
-  ctx.fillStyle='#18814f';ctx.fillText('tico',sx+ctx.measureText('Tac').width,fy);
-
-  const a=document.createElement('a');a.download=`${S.team.replace(/\s+/g,'_')}_${S.formation}.png`;
-  a.href=cv.toDataURL('image/png');a.click();
-  btn.disabled=false;
 }
-function _si(s){return new Promise(r=>{const b=new Blob([s],{type:'image/svg+xml'}),u=URL.createObjectURL(b),i=new Image();i.onload=()=>{URL.revokeObjectURL(u);r(i);};i.src=u;});}
+
+// Saving a canvas reliably across browsers:
+//  - blob + object URL, never a multi-MB data: URL (iOS Safari ignores those)
+//  - the anchor must be in the document for Firefox to honour the click
+//  - iOS gets the share sheet, which is the only path that actually saves there
+//  - anything that still fails throws, so the caller can surface it
+async function saveCanvas(cv,name){
+  const blob=await new Promise((res,rej)=>{
+    if(!cv.toBlob)return rej(new Error('canvas.toBlob is unsupported in this browser'));
+    cv.toBlob(b=>b?res(b):rej(new Error('The image could not be encoded')),'image/png');
+  });
+  const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)
+    ||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  if(isIOS&&navigator.canShare){
+    try{
+      const file=new File([blob],name,{type:'image/png'});
+      if(navigator.canShare({files:[file]})){await navigator.share({files:[file]});return;}
+    }catch(e){ if(e&&e.name==='AbortError')return; }
+  }
+  const url=URL.createObjectURL(blob);
+  try{
+    const a=document.createElement('a');
+    if(isIOS&&!('download' in a)){
+      // Last resort on iOS: show the image so it can be saved by long-press,
+      // rather than failing silently.
+      const w=window.open(url,'_blank');
+      if(!w)throw new Error('Allow pop-ups to save the image, or use the share sheet.');
+      return;
+    }
+    a.href=url;a.download=name;a.rel='noopener';a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }finally{
+    setTimeout(()=>URL.revokeObjectURL(url),10000);
+  }
+}
 function _l(ctx,x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
 function _rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
 
