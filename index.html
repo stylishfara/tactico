@@ -22,24 +22,32 @@
   --ring:#d4d4d4;                 /* Base/Ring */
   --btn-outline-bg:#ffffff;       /* Custom/Btn outline background */
   /* raw hexes taken from the frame — no Lume variable is bound to these */
-  --divider:#e6e6e6;              /* Line 628 stroke */
   --pitch:#18814f;                /* pitch fill */
-  --pitch-pill:#2f6a4e;           /* on-pitch position pill */
+  /* Position accents — Lume Base/*-accent-foreground, one per position group */
+  --pos-gk:#973c00;               /* Base/Warning-accent-foreground */
+  --pos-def:#2b7fff;              /* Base/Information-accent-foreground */
+  --pos-mid:#00a63e;              /* Base/Success-accent-foreground */
+  --pos-fwd:#e7000b;              /* Base/Destructive-accent-foreground */
   /* Numbers / Radius */
   --n0:0px;--n2:2px;--n8:8px;--n10:10px;--n12:12px;--n16:16px;
-  --r8:8px;--r10:10px;--r12:12px;--r16:16px;
+  --r8:8px;--r10:10px;--r12:12px;--r14:14px;--r16:16px;
   --font:'Geist',system-ui,-apple-system,sans-serif;
   --app-w:402px;--pad:16px;
 }
 
 html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);
-  background:var(--background);color:var(--foreground);touch-action:manipulation;
+  background:var(--muted);color:var(--foreground);touch-action:manipulation;
   -webkit-font-smoothing:antialiased}
 
 /* ── App shell — capped at the 402px design frame ───────────── */
 .frame{max-width:var(--app-w);margin:0 auto;height:100%;height:100dvh;
   display:flex;flex-direction:column;overflow:hidden;
   padding:env(safe-area-inset-top,0px) var(--pad) 0}
+
+/* ── App header ──────────────────────────────────────────────── */
+.app-hdr{display:flex;align-items:center;justify-content:space-between;
+  height:24px;flex-shrink:0;margin-top:24px}
+.app-name{font-size:16px;line-height:24px;font-weight:600;color:var(--foreground)}
 
 /* ── Buttons — Lume outline button ──────────────────────────── */
 .btn-outline{
@@ -56,39 +64,32 @@ html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);
 .btn-icon{width:36px;padding:0;border-radius:var(--r8)}
 .chev{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .chev svg{display:block;width:11.25px;height:6.25px}
+.chev.icon20 svg{width:16.25px;height:16.25px}
 
 /* ── Control row: formation (left) + team button-group (right) ─ */
 .ctrl-row{display:flex;align-items:center;justify-content:space-between;
-  gap:8px;flex-shrink:0;margin-top:32px;position:relative;z-index:40}
+  gap:8px;flex-shrink:0;margin-top:8px;position:relative;z-index:40}
 .ctrl{position:relative;display:inline-flex;min-width:0}
 .ctrl{position:relative}
-.ctrl>select,.bg-l>select{position:absolute;inset:0;width:100%;height:100%;opacity:0;
-  border:0;cursor:pointer;font-family:var(--font);font-size:16px}
-.ctrl:focus-within>.btn-outline,.ctrl:focus-within .btn-group{
-  outline:2px solid var(--ring);outline-offset:2px;border-radius:var(--r10)}
+.ctrl>select,.btn-outline>select{position:absolute;inset:0;width:100%;height:100%;opacity:0;
+  border:0;cursor:pointer;font-family:var(--font);font-size:16px;-webkit-appearance:none;appearance:none}
+.ctrl:focus-within>.btn-outline{outline:2px solid var(--ring);outline-offset:2px;border-radius:var(--r10)}
+.ctrl:focus-within .btn-group{outline:2px solid var(--ring);outline-offset:2px}
 .ctrl-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 
 /* Button-group — shares one 1px divider between the halves */
-.btn-group{display:flex;align-items:center;min-width:0}
-.btn-group .bg-l{position:relative;border-right:0;border-radius:var(--r8) 0 0 var(--r8);gap:var(--n8);min-width:0}
-.btn-group .bg-r{border-radius:0 var(--r8) var(--r8) 0;width:44px;padding:0}
+.btn-group{display:flex;align-items:center;min-width:0;height:36px;
+  background:var(--btn-outline-bg);border:1px solid var(--input);
+  border-radius:var(--r14);overflow:hidden}
+.btn-group .btn-outline{border:0;border-radius:0;height:100%}
+.btn-group .bg-l{position:relative;border-right:1px solid var(--input);gap:var(--n8);min-width:0}
+.btn-group .bg-r-text{position:relative;gap:var(--n2);min-width:0}
+.btn-group .bg-r{width:44px;padding:0}
+.btn-group .bg-icon{width:44px;padding:0}
 
-.menu{position:absolute;top:calc(100% + 6px);right:0;min-width:184px;
-  background:var(--background);border:1px solid var(--input);border-radius:var(--r8);
-  box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);
-  padding:4px;z-index:70}
-.menu[hidden]{display:none}
-.menu-item{display:flex;align-items:center;gap:var(--n8);width:100%;
-  padding:8px 10px;border:0;border-radius:6px;background:none;cursor:pointer;
-  font-family:var(--font);font-size:14px;line-height:21px;font-weight:500;
-  color:var(--foreground);text-align:left}
-.menu-item:hover{background:var(--muted)}
-.menu-item:focus-visible{outline:2px solid var(--ring);outline-offset:-2px}
-.menu-item svg{flex-shrink:0;color:var(--muted-foreground)}
-.menu-item[disabled]{opacity:.5;cursor:default}
 
 /* ── Pitch ──────────────────────────────────────────────────── */
-.pitch-wrap{flex:0 1 auto;min-height:0;width:100%;aspect-ratio:370/460;margin-top:16px}
+.pitch-wrap{flex:0 1 auto;min-height:0;width:100%;aspect-ratio:370/460;margin-top:8px}
 .pitch{position:relative;width:100%;height:100%;
   background-color:var(--pitch);
   background-image:repeating-linear-gradient(180deg,
@@ -118,16 +119,19 @@ html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);
   font-size:10px;line-height:15px;font-weight:600;
   color:var(--background);white-space:nowrap
 }
-.pt-pill{background:var(--pitch-pill);position:relative;z-index:1}
+.pt-pill{background:var(--muted);position:relative;z-index:1}
+.pos-gk{color:var(--pos-gk)}
+.pos-def{color:var(--pos-def)}
+.pos-mid{color:var(--pos-mid)}
+.pos-fwd{color:var(--pos-fwd)}
 
 /* ── Bench ──────────────────────────────────────────────────── */
-.bench{background:var(--muted);border-radius:var(--r16);
+.bench{background:var(--background);border-radius:var(--r16);
   padding:var(--n16) 0;display:flex;flex-direction:column;gap:var(--n16);
-  overflow:hidden;flex-shrink:0;margin:16px 0}
+  overflow:hidden;flex-shrink:0;margin:8px 0}
 .bench-hdr{display:flex;align-items:center;justify-content:space-between;padding:0 var(--n16)}
-.bench-title{font-size:16px;line-height:24px;font-weight:500;color:var(--foreground)}
+.bench-title{font-size:14px;line-height:21px;font-weight:500;color:var(--foreground)}
 .bench-count{font-size:14px;line-height:21px;font-weight:500;color:var(--muted-foreground)}
-.bench-div{height:1px;background:var(--divider);width:100%;flex-shrink:0}
 .bench-row{display:flex;align-items:center;gap:10px;padding:0 var(--n16);
   overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x}
 .bench-row::-webkit-scrollbar{display:none}
@@ -135,11 +139,11 @@ html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);
 .b-card{display:flex;flex-direction:column;align-items:center;gap:6px;
   flex-shrink:0;cursor:grab}
 .b-card:active{opacity:.7}
-.b-pill{background:var(--muted-foreground)}
-.b-body{background:var(--background);border-radius:var(--r12);
-  padding:var(--n2) var(--n10) var(--n8);text-align:center;color:var(--muted-foreground)}
-.b-num{display:block;font-size:12px;line-height:14px;font-weight:500}
-.b-name{display:block;font-size:12px;line-height:18px;font-weight:600;white-space:nowrap}
+.b-pill{background:var(--muted);color:var(--foreground)}
+.b-body{background:var(--foreground);border-radius:var(--r12);
+  padding:var(--n2) var(--n10) var(--n8);text-align:center}
+.b-num{display:block;font-size:12px;line-height:14px;font-weight:500;color:var(--muted-foreground)}
+.b-name{display:block;font-size:12px;line-height:18px;font-weight:600;white-space:nowrap;color:var(--background)}
 
 /* ── Bottom sheet ───────────────────────────────────────────── */
 .overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.4)}
@@ -192,36 +196,32 @@ html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);
 
 <div class="frame">
 
-  <!-- Control row -->
+  <!-- App header -->
+  <div class="app-hdr">
+    <span class="app-name">Tactico</span>
+  </div>
+
+  <!-- Control row: team + formation grouped left, actions grouped right -->
   <div class="ctrl-row">
     <div class="ctrl">
-      <select id="formationSel" aria-label="Formation"></select>
-      <span class="btn-outline" aria-hidden="true">
-        <span class="ctrl-label" id="formationLabel">4-3-3</span>
-        <span class="chev"><svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="11.2499" height="6.24991" viewBox="0 0 11.2499 6.24991" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="Vector (Stroke)" d="M10.1831 0.183058C10.4271 -0.0610194 10.8228 -0.0610194 11.0668 0.183058C11.3109 0.427136 11.3109 0.82277 11.0668 1.06685L6.06685 6.06685C5.82277 6.31093 5.42714 6.31093 5.18306 6.06685L0.183058 1.06685C-0.0610194 0.82277 -0.0610194 0.427136 0.183058 0.183058C0.427136 -0.0610194 0.82277 -0.0610194 1.06685 0.183058L5.62495 4.74116L10.1831 0.183058Z" fill="#262626"/></svg></span>
-      </span>
-    </div>
-    <div class="ctrl" id="teamCtrl">
       <span class="btn-group">
         <span class="btn-outline bg-l">
           <select id="teamSel" aria-label="Team"></select>
           <span class="ctrl-label" id="teamLabel" aria-hidden="true">Arsenal</span>
         </span>
-        <button type="button" class="btn-outline bg-r" id="menuBtn"
-          aria-haspopup="menu" aria-expanded="false" aria-label="More actions"
-          onclick="toggleMenu(event)"><span class="chev"><svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="11.2499" height="6.24991" viewBox="0 0 11.2499 6.24991" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="Vector (Stroke)" d="M10.1831 0.183058C10.4271 -0.0610194 10.8228 -0.0610194 11.0668 0.183058C11.3109 0.427136 11.3109 0.82277 11.0668 1.06685L6.06685 6.06685C5.82277 6.31093 5.42714 6.31093 5.18306 6.06685L0.183058 1.06685C-0.0610194 0.82277 -0.0610194 0.427136 0.183058 0.183058C0.427136 -0.0610194 0.82277 -0.0610194 1.06685 0.183058L5.62495 4.74116L10.1831 0.183058Z" fill="#262626"/></svg></span></button>
+        <span class="btn-outline bg-r-text">
+          <select id="formationSel" aria-label="Formation"></select>
+          <span class="ctrl-label" id="formationLabel" aria-hidden="true">4-3-3</span>
+          <span class="chev"><svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="11.2499" height="6.24991" viewBox="0 0 11.2499 6.24991" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="Vector (Stroke)" d="M10.1831 0.183058C10.4271 -0.0610194 10.8228 -0.0610194 11.0668 0.183058C11.3109 0.427136 11.3109 0.82277 11.0668 1.06685L6.06685 6.06685C5.82277 6.31093 5.42714 6.31093 5.18306 6.06685L0.183058 1.06685C-0.0610194 0.82277 -0.0610194 0.427136 0.183058 0.183058C0.427136 -0.0610194 0.82277 -0.0610194 1.06685 0.183058L5.62495 4.74116L10.1831 0.183058Z" fill="#262626"/></svg></span>
+        </span>
       </span>
-      <div class="menu" id="actionMenu" role="menu" hidden>
-        <button type="button" class="menu-item" role="menuitem" onclick="menuAction('reset')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
-          Reset lineup
-        </button>
-        <button type="button" class="menu-item" role="menuitem" id="exportBtn" onclick="menuAction('export')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export as image
-        </button>
-      </div>
     </div>
+    <span class="btn-group">
+      <button type="button" class="btn-outline bg-l bg-icon" onclick="resetAll()"
+        title="Reset lineup" aria-label="Reset lineup"><span class="chev icon20"><svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16.25" height="16.25" viewBox="0 0 16.25 16.25" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="Vector (Stroke)" d="M15 8.125C15 6.30164 14.276 4.55266 12.9867 3.26335C11.6975 1.97423 9.94888 1.25022 8.12581 1.25C6.19095 1.25767 4.33385 2.01289 2.94271 3.35775L2.13379 4.16667H4.79167C5.13684 4.16667 5.41667 4.44649 5.41667 4.79167C5.41667 5.13684 5.13684 5.41667 4.79167 5.41667H0.625C0.279822 5.41667 0 5.13684 0 4.79167V0.625C0 0.279822 0.279822 0 0.625 0C0.970178 0 1.25 0.279822 1.25 0.625V3.28288L2.07357 2.45931C3.69698 0.889916 5.8646 0.00851745 8.12256 0H8.125C10.2799 0 12.3467 0.855824 13.8704 2.37956C15.3942 3.90329 16.25 5.97012 16.25 8.125C16.25 8.47018 15.9702 8.75 15.625 8.75C15.2798 8.75 15 8.47018 15 8.125ZM16.25 15.625C16.25 15.9702 15.9702 16.25 15.625 16.25C15.2798 16.25 15 15.9702 15 15.625V12.9671L14.1764 13.7907C12.553 15.3601 10.3854 16.2415 8.12744 16.25H8.125C5.97012 16.25 3.90329 15.3942 2.37956 13.8704C0.855824 12.3467 0 10.2799 0 8.125C0 7.77982 0.279822 7.5 0.625 7.5C0.970178 7.5 1.25 7.77982 1.25 8.125C1.25 9.94836 1.97403 11.6973 3.26335 12.9867C4.55228 14.2756 6.3006 14.9988 8.12337 14.9992C10.0585 14.9917 11.916 14.2373 13.3073 12.8923L14.1162 12.0833H11.4583C11.1132 12.0833 10.8333 11.8035 10.8333 11.4583C10.8333 11.1132 11.1132 10.8333 11.4583 10.8333H15.625C15.9702 10.8333 16.25 11.1132 16.25 11.4583V15.625Z" fill="#262626"/></svg></span></button>
+      <button type="button" class="btn-outline bg-r" id="exportBtn" onclick="exportSnapshot()"
+        title="Export as image" aria-label="Export as image"><span class="chev icon20"><svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16.25" height="16.25" viewBox="0 0 16.25 16.25" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="Vector (Stroke)" d="M0 13.9583V10.625C0 10.2798 0.279822 10 0.625 10C0.970178 10 1.25 10.2798 1.25 10.625V13.9583C1.25 14.2346 1.35983 14.4995 1.55518 14.6948C1.75053 14.8902 2.0154 15 2.29167 15H13.9583C14.2346 15 14.4995 14.8902 14.6948 14.6948C14.8902 14.4995 15 14.2346 15 13.9583V10.625C15 10.2798 15.2798 10 15.625 10C15.9702 10 16.25 10.2798 16.25 10.625V13.9583C16.25 14.5661 16.0084 15.1488 15.5786 15.5786C15.1488 16.0084 14.5661 16.25 13.9583 16.25H2.29167C1.68388 16.25 1.10116 16.0084 0.671387 15.5786C0.241616 15.1488 0 14.5661 0 13.9583ZM7.5 0.625C7.5 0.279822 7.77982 0 8.125 0C8.47018 0 8.75 0.279822 8.75 0.625V9.11621L11.8498 6.01644C12.0938 5.77236 12.4895 5.77236 12.7336 6.01644C12.9776 6.26052 12.9776 6.65615 12.7336 6.90023L8.56689 11.0669C8.32282 11.311 7.92718 11.311 7.68311 11.0669L3.51644 6.90023C3.27236 6.65615 3.27236 6.26052 3.51644 6.01644C3.76052 5.77236 4.15615 5.77236 4.40023 6.01644L7.5 9.11621V0.625Z" fill="#262626"/></svg></span></button>
+    </span>
   </div>
 
   <!-- Pitch -->
@@ -266,7 +266,6 @@ html,body{height:100%;height:100dvh;overflow:hidden;font-family:var(--font);
       <span class="bench-title">Bench</span>
       <span class="bench-count" id="benchCnt"></span>
     </div>
-    <div class="bench-div"></div>
     <div class="bench-row" id="benchRow"
       ondragover="onBenchDragOver(event)" ondragleave="onBenchDragLeave()"
       ondrop="onBenchDrop(event)"></div>
@@ -847,24 +846,13 @@ function setFormation(f){
   render();
 }
 
-// ── Split-button menu ─────────────────────────────────────────
-function toggleMenu(e){
-  if(e)e.stopPropagation();
-  const m=document.getElementById('actionMenu'),b=document.getElementById('menuBtn');
-  const open=m.hidden;
-  m.hidden=!open;b.setAttribute('aria-expanded',String(open));
-}
-function closeMenu(){
-  const m=document.getElementById('actionMenu');
-  if(m&&!m.hidden){m.hidden=true;document.getElementById('menuBtn').setAttribute('aria-expanded','false');}
-}
-function menuAction(a){
-  closeMenu();
-  if(a==='reset')resetAll();
-  else if(a==='export')exportSnapshot();
-}
-document.addEventListener('click',closeMenu);
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+// Position groups drive the badge accent (Figma 2062:40189).
+const POS_GROUP={GK:'gk',
+  CB:'def',LB:'def',RB:'def',LWB:'def',RWB:'def',
+  DM:'mid',CM:'mid',AM:'mid',LM:'mid',RM:'mid',
+  LW:'fwd',RW:'fwd',ST:'fwd'};
+const POS_ACCENT={gk:'#973c00',def:'#2b7fff',mid:'#00a63e',fwd:'#e7000b'};
+function posGroup(code){return POS_GROUP[code]||'mid';}
 
 // ── Render ────────────────────────────────────────────────────
 function syncControls(){
@@ -900,7 +888,7 @@ function renderTokens(){
     }
     el.innerHTML=`<span class="pt-card"><span class="pt-num">${player?player.n:'&nbsp;'}</span>`
       +`<span class="pt-name">${player?player.name:pd.role}</span></span>`
-      +`<span class="pill pt-pill">${roleLabel(li.posId)}</span>`;
+      +`<span class="pill pt-pill pos-${posGroup(pd.role)}">${roleLabel(li.posId)}</span>`;
     el.style.left=x+'%';el.style.top=y+'%';
   });
 }
@@ -997,8 +985,8 @@ async function exportSnapshot(){
       // pill: overlaps the card bottom by 4px
       ctx.font=F(600,10*SC);
       const pw=ctx.measureText(role).width+13.334*SC, ph=20*SC, ptop=ctop+chh-4*SC;
-      ctx.fillStyle='#2f6a4e';_rr(ctx,cx-pw/2,ptop,pw,ph,13.333*SC);ctx.fill();
-      ctx.fillStyle='#ffffff';ctx.textBaseline='middle';
+      ctx.fillStyle='#f5f5f5';_rr(ctx,cx-pw/2,ptop,pw,ph,13.333*SC);ctx.fill();
+      ctx.fillStyle=POS_ACCENT[posGroup(pd.role)];ctx.textBaseline='middle';
       ctx.fillText(role,cx,ptop+ph/2);
       ctx.textBaseline='top';
     }
