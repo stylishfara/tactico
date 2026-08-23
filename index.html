@@ -993,7 +993,7 @@ async function exportSnapshot(){
       ctx.fillStyle='rgba(255,255,255,.4)';ctx.font=F(500,12*SC);
       ctx.fillText(num,cx,ctop+2*SC+1*SC);
       ctx.fillStyle='#ffffff';ctx.font=F(600,12*SC);
-      ctx.fillText(name,cx,ctop+(2+14)*SC+2*SC);
+      ctx.fillText(name,cx,ctop+(2+14)*SC+3*SC);
       // pill: overlaps the card bottom by 4px
       ctx.font=F(600,10*SC);
       const pw=ctx.measureText(role).width+13.334*SC, ph=20*SC, ptop=ctop+chh-4*SC;
@@ -1058,7 +1058,7 @@ async function saveCanvas(cv,name){
   }
 }
 function _l(ctx,x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
-function _rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
+function _rr(ctx,x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
 
 function resetAll(){S.overrides={};S.roles={};initLineup();render();}
 
